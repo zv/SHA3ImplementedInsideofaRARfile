@@ -4,9 +4,12 @@
 #include <util.rh>
 ; vim: syntax=fasm
 
-
-
-; shit just got real.
+; san francisco is covered over in darkness and it seems like everyone save yours truely is at ease in bed.
+; it's been a cold and quiet weekend, so I thought I'd get back into hacking in assembly 
+; so after much deliberation, rumination and something else young men do,
+; here is the SHA-3 standard inside the RAR virtual machine filter language. here's my results.
+; 10-08-2012 
+; - zv
 
 ; the test vector for 32 round Keccak-256 
 mov [r0+#0], #0xa8d71b07
@@ -21,9 +24,6 @@ mov [r0+#28], #0xcfaf3d3c
 
 "Keccak-256 Test Hash"
 
-
-; [r6+4] beginning of bc
-; [r6+84] beginning of st
 
 keccak:
   call $theta
@@ -77,11 +77,11 @@ for (i = 0; i < 5; i++) {
                 st[j + i] ^= t;
         }
 
-theta_assignment:
+; me? i'm an assembly programmer.
+_theta_assignment:
   push [r1+#4]
   push #5
   call $_mod
-  ; r6+4+r0; this is bc[i+4 % 5]
   ; the bitwise element swap, it does nothing! 
   ; i live dangerously close to spec 
   mov r0, r0 
@@ -93,7 +93,7 @@ theta_assignment:
   call $rotate
   xor r2, r0 ; r2 now contains t 
   mov r0, #0 ; r0 is now j of the inner loop
-inner_theta_loop: 
+_inner_theta_loop: 
    add r0, r1
    xor [r6+#84+r0], r2  
    pop r0
