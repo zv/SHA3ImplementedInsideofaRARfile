@@ -43,19 +43,21 @@ chi:
   
 iota:
   call $lsfr
-  
+
+; here's a haiku that describes this function 
+; 32 bit word here
+; standard calls for 64 bit
+; xor them seperately
 parity:
-  ; set the lower value of bc[i]
-  mov r1, [r0]
-  xor r1, [r0+64]  
+  mov r1, [r0]      ; set the lower value of bc[i]
+  xor r1, [r0+64]   ; now xor the lower 32 bits
   xor r1, [r0+128]
   xor r1, [r0+192]  
   xor r1, [r0+256]  
   mov [r6+#4+r4], r1 
 
- ; set the upper value of bc[i] 
-  mov r1, [r0+32]
-  xor r1, [r0+96]  
+  mov r1, [r0+32]  ; set the upper value of bc[i] 
+  xor r1, [r0+96]  ; now xor the higher 32 bits
   xor r1, [r0+160]
   xor r1, [r0+288]  
   mov [r6+#8+r4], r1 
@@ -64,6 +66,7 @@ parity:
   cmp r2, #5
   add r2, #1
   jnz $parity 
+  
   ret
 
 
@@ -107,13 +110,13 @@ inner_theta_loop:
 
 rotate:
   ; (((x) << (y)) | ((x) >> (64 - (y))))
-  pop r0 ; x
-  pop r1 ; y
-  mov r2, r0 ; make a copy of x
-  shl r0, r1 ; x << y
-  add r1, -#64 ;(64 - y)
-  shr r2, r1 ; x >> (64-y)
-  or r0, r2 
+  pop r0        ; x
+  pop r1        ; y
+  mov r2, r0    ; make a copy of x
+  shl r0, r1    ; x << y
+  add r1, -#64  ;(64 - y)
+  shr r2, r1    ; x >> (64-y)
+  or r0, r2     ; or those mugs
   pop r0 
   ret
 ;
