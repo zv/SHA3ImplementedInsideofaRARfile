@@ -6,12 +6,14 @@
 
 ; san francisco is covered over in darkness and it seems like everyone save yours truely is at ease in bed.
 ; it's been a cold and quiet weekend, so I thought I'd get back into hacking in assembly 
-; so after much deliberation, rumination and something else young men do,
+; so after much deliberation, rumination and something else young assembly programmers do,
 ; here is the SHA-3 standard inside the RAR virtual machine filter language. here's my results.
 ; 10-08-2012 
 ; - zv
 
 ; the test vector for 32 round Keccak-256 
+; "Keccak-256 Test Hash"
+
 mov [r0+#0], #0xa8d71b07
 mov [r0+#4], #0xf4af26a4
 mov [r0+#8], #0xff21027f
@@ -22,7 +24,6 @@ mov [r0+#24], #0x6da52ee3
 mov [r0+#28], #0xcfaf3d3c
 
 
-"Keccak-256 Test Hash"
 
 
 keccak:
@@ -79,6 +80,9 @@ for (i = 0; i < 5; i++) {
 
 ; me? i'm an assembly programmer.
 _theta_assignment:
+  push r6       ; save stack pointer
+  mov r6, r7    ; create a new frame 
+  sub r7, #16   ; allocate some, uhh, variables
   push [r1+#4]
   push #5
   call $_mod
@@ -87,6 +91,9 @@ _theta_assignment:
   mov r0, r0 
   
   ; use the bitwise rotation to get through! 
+  push r6       ; save stack pointer
+  mov r6, r7    ; create a new frame 
+  sub r7, #16   ; allocate 2 64 bit integros 
   mov r2, r0
   push #1
   push [r1+#4]
@@ -109,9 +116,6 @@ _inner_theta_loop:
 
 rotate:
   ; (((x) << (y)) | ((x) >> (64 - (y))))
-  push r6       ; save stack pointer
-  mov r6, r7    ; create a new frame 
-  sub r7, #16   ; allocate some, uhh, variables
   pop r0        ; x
   pop r1        ; y
   mov r2, r0    ; make a copy of x
