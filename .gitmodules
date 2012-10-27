@@ -1,0 +1,3 @@
+[submodule "rarvmtools"]
+	path = rarvmtools
+	url = git://github.com/taviso/rarvmtools.git
