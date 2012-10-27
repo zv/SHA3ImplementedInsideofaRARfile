@@ -59,54 +59,63 @@ parity:
   xor r1, [r0+160]
   xor r1, [r0+288]  
   mov [r6+#8+r4], r1 
-
+  
+  ; loop
   cmp r2, #5
   add r2, #1
   jnz $parity 
+  ret
 
 
-;theta_assignment:
-;  push [r1+#4]
-;  push #5
-;  ; one day i will be cool enough to implement mod myself 
-;  call $_mod
-;  ; grab the shit out of the bc  and store in r1
-;  ; r6+4+r0; this is bc[i+4 % 5]
-;  ; the bitwise element swap, it does nothing!
-;  mov r0, r0 
-;  
-;  ; use the bitwise rotation to get through! 
-;  mov r2, r0
-;  push #1
-;  push [r1+#4]
-;  call $rotate
-;  xor r2, r0 ; r2 now contains t 
-;  mov r0, #0 ; r0 is now j of the inner loop
-;  jnz $inner_theta_loop 
-;  
-;inner_theta_loop: 
-;   add r0, r1
-;   xor [r6+#84+r0], r2  
-;   pop r0
-;   mod
-;   cmp r0, #25  
-;   mov r0, [r0+#5]
-;   jnz $inner_theta_loop
-;   jmp $rho_pi
-;   
-;   
-;
-;
-;rotate:
-;  ; (((x) << (y)) | ((x) >> (64 - (y))))
-;  pop r0 ; x
-;  pop r1 ; y
-;  mov r2, r0 ; make a copy of x
-;  shl r0, r1 ; x << y
-;  shr r2, [#64-r1] ; x >> (64-y)
-;  or r0, r2 
-;  pop r0 
-;  ret
+
+for (i = 0; i < 5; i++) {
+            t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
+            for (j = 0; j < 25; j += 5)
+                st[j + i] ^= t;
+        }
+
+theta_assignment:
+  push [r1+#4]
+  push #5
+  call $_mod
+  ; r6+4+r0; this is bc[i+4 % 5]
+  ; the bitwise element swap, it does nothing! 
+  ; i live dangerously close to spec 
+  mov r0, r0 
+  
+  ; use the bitwise rotation to get through! 
+  mov r2, r0
+  push #1
+  push [r1+#4]
+  call $rotate
+  xor r2, r0 ; r2 now contains t 
+  mov r0, #0 ; r0 is now j of the inner loop
+  jnz $inner_theta_loop 
+  
+inner_theta_loop: 
+   add r0, r1
+   xor [r6+#84+r0], r2  
+   pop r0
+   mod
+   cmp r0, #25  
+   mov r0, [r0+#5]
+   jnz $inner_theta_loop
+   jmp $rho_pi
+   
+   
+
+
+rotate:
+  ; (((x) << (y)) | ((x) >> (64 - (y))))
+  pop r0 ; x
+  pop r1 ; y
+  mov r2, r0 ; make a copy of x
+  shl r0, r1 ; x << y
+  add r1, -#64 ;(64 - y)
+  shr r2, r1 ; x >> (64-y)
+  or r0, r2 
+  pop r0 
+  ret
 ;
 ;
 ;rho_and_pi:
