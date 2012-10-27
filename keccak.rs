@@ -93,8 +93,6 @@ theta_assignment:
   call $rotate
   xor r2, r0 ; r2 now contains t 
   mov r0, #0 ; r0 is now j of the inner loop
-  jnz $inner_theta_loop 
-  
 inner_theta_loop: 
    add r0, r1
    xor [r6+#84+r0], r2  
@@ -105,11 +103,15 @@ inner_theta_loop:
    jnz $inner_theta_loop
    jmp $rho_pi
    
-   
 
+; thanks HACKMEM! 
+; mad respect from the youth of today!
 
 rotate:
   ; (((x) << (y)) | ((x) >> (64 - (y))))
+  push r6       ; save stack pointer
+  mov r6, r7    ; create a new frame 
+  sub r7, #16   ; allocate some, uhh, variables
   pop r0        ; x
   pop r1        ; y
   mov r2, r0    ; make a copy of x
