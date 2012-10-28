@@ -71,14 +71,6 @@ parity:
   ret
 
 
-
-for (i = 0; i < 5; i++) {
-            t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
-            for (j = 0; j < 25; j += 5)
-                st[j + i] ^= t;
-        }
-
-; me? i'm an assembly programmer.
 _theta_assignment:
   push r6       ; save stack pointer
   mov r6, r7    ; create a new frame 
@@ -94,25 +86,69 @@ _theta_assignment:
   push r6       ; save stack pointer
   mov r6, r7    ; create a new frame 
   sub r7, #16   ; allocate 2 64 bit integros 
-  mov r2, r0
-  push #1
-  push [r1+#4]
-  call $rotate
-  xor r2, r0 ; r2 now contains t 
+  mov r2, r0    ; i rmeember this is important for some reason
+  push #1       ; first argument to rotate
+  push [r1+#4]  ; second argument (i + 4) 
+  call $rotate  ; using the boost to get through
+  
+  xor r2, r0 ; r2 now contains an exclusive or of the mod and the rotation  
   mov r0, #0 ; r0 is now j of the inner loop
 _inner_theta_loop: 
    add r0, r1
    xor [r6+#84+r0], r2  
+            for (j = 0; j < 25; j += 5)
+                st[j + i] ^= t;
+        }
+
    pop r0
-   mod
    cmp r0, #25  
    mov r0, [r0+#5]
    jnz $inner_theta_loop
+   
    jmp $rho_pi
    
 
 ; thanks HACKMEM! 
 ; mad respect from the youth of today!
+
+_rotate:
+  and count, 0x3F
+  cmp count, 0x1F
+  jbe inf32
+  mov tmp, low
+  mov low, high
+  mov high, tmp
+  and count, 0x1F
+  inf32:
+  mov tmpcount, 32
+  sub tmpcount, count
+  mov tmp2, high
+  shr tmp2, tmpcount
+  mov tmp, tmp2
+  mov tmp2, low
+  shl tmp2, count
+  or tmp, tmp2
+  shl high, count
+  shr low, tmpcount
+  or high, low
+  mov low, tmp2 
+  
+
+void rol_64(DWORD* high, DWORD* low, BYTE count)
+{
+    DWORD tmp;
+    count &= 0x3F;
+    if (count > 32)
+    {
+        tmp = *low;
+        *low = *high;
+        *high = tmp;
+        count &= 0x1F;
+    }
+    tmp = *low << count | *high >> (32 - count);
+    *high = *high << count | *low >> (32 - count);
+    *low = tmp;
+}
 
 rotate:
   ; (((x) << (y)) | ((x) >> (64 - (y))))
