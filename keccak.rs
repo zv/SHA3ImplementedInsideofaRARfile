@@ -104,13 +104,12 @@ _inner_theta_loop:
    cmp r0, #25  
    mov r0, [r0+#5]
    jnz $inner_theta_loop
-   
+   ; jnz $_theta_assignment   
    jmp $rho_pi
    
 
 ; thanks HACKMEM! 
 ; mad respect from the youth of today!
-
 _rotate:
   and count, 0x3F
   cmp count, 0x1F
