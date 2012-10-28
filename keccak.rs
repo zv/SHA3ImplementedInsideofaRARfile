@@ -134,35 +134,6 @@ _rotate:
   mov low, tmp2 
   
 
-void rol_64(DWORD* high, DWORD* low, BYTE count)
-{
-    DWORD tmp;
-    count &= 0x3F;
-    if (count > 32)
-    {
-        tmp = *low;
-        *low = *high;
-        *high = tmp;
-        count &= 0x1F;
-    }
-    tmp = *low << count | *high >> (32 - count);
-    *high = *high << count | *low >> (32 - count);
-    *low = tmp;
-}
-
-rotate:
-  ; (((x) << (y)) | ((x) >> (64 - (y))))
-  pop r0        ; x
-  pop r1        ; y
-  mov r2, r0    ; make a copy of x
-  shl r0, r1    ; x << y
-  add r1, -#64  ;(64 - y)
-  shr r2, r1    ; x >> (64-y)
-  or r0, r2     ; or those mugs
-  pop r0 
-  ret
-;
-;
 ;rho_and_pi:
 ;  mov r0, ST[1]
 ;  ; could make this a loop but honestly fuck that 
