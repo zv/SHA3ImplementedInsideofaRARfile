@@ -78,9 +78,7 @@ _theta_assignment:
   push [r1+#4]
   push #5
   call $_mod
-  ; the bitwise element swap, it does nothing! 
-  ; i live dangerously close to spec 
-  mov r0, r0 
+  mov r0, r0 ; i live dangerously close to spec 
   
   ; use the bitwise rotation to get through! 
   push r6       ; save stack pointer
@@ -89,24 +87,59 @@ _theta_assignment:
   mov r2, r0    ; i rmeember this is important for some reason
   push #1       ; first argument to rotate
   push [r1+#4]  ; second argument (i + 4) 
-  call $rotate  ; using the boost to get through
+  call $rotate  ; using the boost to get through!
   
   xor r2, r0 ; r2 now contains an exclusive or of the mod and the rotation  
   mov r0, #0 ; r0 is now j of the inner loop
 _inner_theta_loop: 
    add r0, r1
    xor [r6+#84+r0], r2  
-            for (j = 0; j < 25; j += 5)
-                st[j + i] ^= t;
-        }
-
    pop r0
    cmp r0, #25  
    mov r0, [r0+#5]
    jnz $inner_theta_loop
    ; jnz $_theta_assignment   
    jmp $rho_pi
+  
+ 
+
+;    10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4, 
+;    15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1 
+
+
+bc0 = 10
+s
+rho_pi:
+; this is so ghetto
+; but then again
+; so am i
+; the main insight of this algorithm is to take some value out of 
+; the positional ilngt, rotl it and modify the original string supplied
+; to the so called "algorithm" (loose collection of statements resembling
+; logic
+;         t = st[1];
+;        for (i = 0; i < 24; i++) {
+;            j = keccakf_piln[i];
+;            
+;            bc[0] = st[j];
+;
+;            st[j] = ROTL64(t, keccakf_rotc[i]);
+;            
+;            t = bc[0];
+;        }
+
+
+  mov r0, ST[1]
+  ; could make this a loop but honestly fuck that 
+  ; triangles are triangles, deal with it.
    
+  mov r1, [ST+10] ; move triangular number
+  push r0 ; x
+  push #1 ; y
+  call rotate
+  
+  mov r0, r1
+
 
 ; thanks HACKMEM! 
 ; mad respect from the youth of today!
@@ -133,16 +166,5 @@ _rotate:
   mov low, tmp2 
   
 
-;rho_and_pi:
-;  mov r0, ST[1]
-;  ; could make this a loop but honestly fuck that 
-;  ; triangles are triangles, deal with it.
-;   
-;  mov r1, [ST+10] ; move triangular number
-;  push r0 ; x
-;  push #1 ; y
-;  call rotate
-;  
-;  mov r0, r1
-;  
+  
 _start:
