@@ -3,11 +3,6 @@
 #include <math.rh>
 #include <util.rh>
 ; vim: syntax=fasm
-
-; san francisco is covered over in darkness and it seems like everyone save yours truely is at ease in bed.
-; it's been a cold and quiet weekend, so I thought I'd get back into hacking in assembly 
-; so after much deliberation, rumination and something else young assembly programmers do,
-; here is the SHA-3 standard inside the RAR virtual machine filter language. here's my results.
 ; 10-08-2012 
 ; - zv
 
@@ -70,6 +65,13 @@ parity:
   
   ret
 
+_rho_assignment:
+  push r6 ; save stack pointer
+  mov r6, r7 ; create a new frame
+  sub r7, #16 ; just dealing with the shit in order to be the shit
+  ; fuck it
+  ; this is it
+  ; it is what it is
 
 _theta_assignment:
   push r6       ; save stack pointer
@@ -107,17 +109,18 @@ _inner_theta_loop:
 ;    15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1 
 
 
-bc0 = 10
-s
 rho_pi:
 ; this is so ghetto
-; but then again
-; so am i
+; but then again so am i
+;
 ; the main insight of this algorithm is to take some value out of 
 ; the positional ilngt, rotl it and modify the original string supplied
-; to the so called "algorithm" (loose collection of statements resembling
-; logic
-;         t = st[1];
+; to the so called "algorithm" (more appropriately stated as a loose 
+; collection of alcohol induced statements making a complete mockery of 
+; the very notion of logic and reason)
+;  push r6     ; you know what this does
+;  mov r6, r7  ; activate the frames batman!
+;       t = st[1];
 ;        for (i = 0; i < 24; i++) {
 ;            j = keccakf_piln[i];
 ;            
