@@ -115,9 +115,7 @@ rho_pi:
 ;
 ; the main insight of this algorithm is to take some value out of 
 ; the positional ilngt, rotl it and modify the original string supplied
-; to the so called "algorithm" (more appropriately stated as a loose 
-; collection of alcohol induced statements making a complete mockery of 
-; the very notion of logic and reason)
+; to the so called "algorithm" 
 ;  push r6     ; you know what this does
 ;  mov r6, r7  ; activate the frames batman!
 ;       t = st[1];
