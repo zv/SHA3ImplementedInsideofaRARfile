@@ -131,8 +131,6 @@ rho_pi:
 
 
   mov r0, ST[1]
-  ; could make this a loop but honestly fuck that 
-  ; triangles are triangles, deal with it.
    
   mov r1, [ST+10] ; move triangular number
   push r0 ; x
