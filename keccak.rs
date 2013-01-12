@@ -9,17 +9,14 @@
 ; the test vector for 32 round Keccak-256 
 ; "Keccak-256 Test Hash"
 
-mov [r0+#0], #0xa8d71b07
-mov [r0+#4], #0xf4af26a4
-mov [r0+#8], #0xff21027f
+mov [r0+#0],  #0xa8d71b07
+mov [r0+#4],  #0xf4af26a4
+mov [r0+#8],  #0xff21027f
 mov [r0+#12], #0x62ff6026
 mov [r0+#16], #0x7ff955c9
 mov [r0+#20], #0x63f042c4
 mov [r0+#24], #0x6da52ee3
 mov [r0+#28], #0xcfaf3d3c
-
-
-
 
 keccak:
   call $theta
@@ -66,16 +63,16 @@ parity:
   ret
 
 _rho_assignment:
-  push r6 ; save stack pointer
-  mov r6, r7 ; create a new frame
+  push r6 
+  mov r6, r7 
   sub r7, #16 ; just dealing with the shit in order to be the shit
   ; fuck it
   ; this is it
   ; it is what it is
 
 _theta_assignment:
-  push r6       ; save stack pointer
-  mov r6, r7    ; create a new frame 
+  push r6      
+  mov r6, r7    
   sub r7, #16   ; allocate some, uhh, variables
   push [r1+#4]
   push #5
@@ -86,7 +83,7 @@ _theta_assignment:
   push r6       ; save stack pointer
   mov r6, r7    ; create a new frame 
   sub r7, #16   ; allocate 2 64 bit integros 
-  mov r2, r0    ; i rmeember this is important for some reason
+  mov r2, r0   
   push #1       ; first argument to rotate
   push [r1+#4]  ; second argument (i + 4) 
   call $rotate  ; using the boost to get through!
@@ -121,11 +118,8 @@ rho_pi:
 ;       t = st[1];
 ;        for (i = 0; i < 24; i++) {
 ;            j = keccakf_piln[i];
-;            
 ;            bc[0] = st[j];
-;
 ;            st[j] = ROTL64(t, keccakf_rotc[i]);
-;            
 ;            t = bc[0];
 ;        }
 
