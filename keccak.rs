@@ -5,6 +5,10 @@
 ; vim: syntax=fasm
 ; 10-08-2012 
 ; - zv
+; this is a pure RAR file virtual machine implementation of the new SHA-3 standard keccak
+; this code is licensed under microsofts code freedom license
+; just kidding
+; MIT LICENSE - FREE FOR REDISTRIBUTION
 
 ; A Keccak-f round is composed from a sequence of dedicated mappings, each one with its particular task operating on a state array of 5 x 5 lanes. All allowed lane lengths are powers of two - w ∈ {1, 2, 4, 8, 16, 32, 64} (b = 25w); hence shorter lanes divides longer lane lengths. As "the propagation structures for smaller versions are embedded as symmetric structure in larger width version" the authors call it a Matryoshka structure.
 
