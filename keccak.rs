@@ -6,19 +6,32 @@
 ; 10-08-2012 
 ; - zv
 
-; the test vector for 32 round Keccak-256 
-; "Keccak-256 Test Hash"
+; A Keccak-f round is composed from a sequence of dedicated mappings, each one with its particular task operating on a state array of 5 x 5 lanes. All allowed lane lengths are powers of two - w ∈ {1, 2, 4, 8, 16, 32, 64} (b = 25w); hence shorter lanes divides longer lane lengths. As "the propagation structures for smaller versions are embedded as symmetric structure in larger width version" the authors call it a Matryoshka structure.
 
-mov [r0+#0],  #0xa8d71b07
-mov [r0+#4],  #0xf4af26a4
-mov [r0+#8],  #0xff21027f
-mov [r0+#12], #0x62ff6026
-mov [r0+#16], #0x7ff955c9
-mov [r0+#20], #0x63f042c4
-mov [r0+#24], #0x6da52ee3
-mov [r0+#28], #0xcfaf3d3c
 
 keccak:
+  ; the test vector for 32 round Keccak-256 
+  ; "Keccak-256 Test Hash"
+  mov [r0+#0],  #0xa8d71b07
+  mov [r0+#4],  #0xf4af26a4
+  mov [r0+#8],  #0xff21027f
+  mov [r0+#12], #0x62ff6026
+  mov [r0+#16], #0x7ff955c9
+  mov [r0+#20], #0x63f042c4
+  mov [r0+#24], #0x6da52ee3
+  mov [r0+#28], #0xcfaf3d3c
+  sub r7, #50 ; allocate the length of the message (25 64 bit ints)
+  sub r7, #144 ; allocate some temporary space 
+  ; Keccak permutations are designated by keccak-f[b] where b defines the width of the
+  ; permutation, the number of rounds depends on the width (in our case 1600, the highest)
+  ; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
+  cmp r0, #24
+  call $keccak_round
+  xor r0, r0
+  mov r0, #0x0 
+  add r0, #0x1 
+ 
+keccak_round:
   call $theta
   call $rho_pi
   call $chi
