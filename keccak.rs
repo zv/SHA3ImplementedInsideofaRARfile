@@ -143,14 +143,15 @@ rho_pi:
 ;            t = bc[0];
 ;        }
 
+; the triangles 
+;    1,  3,  6,  10, 15, 21, 28, 36, 45, 55, 2,  14,  27, 41, 56, 8,  25, 43, 62, 18, 39, 61, 20, 44
 
   mov r0, ST[1]
-   
-  mov r1, [ST+10] ; move triangular number
   push r0 ; x
   push #1 ; y
   call rotate
-  
+   
+ 
   mov r0, r1
 
 
