@@ -50,7 +50,11 @@ keccak_round:
 
 theta:
   call $parity
-  call $theta_column_assignment 
+  ; C[x] = A[x,0] ⊕ A[x,1] ⊕ A[x,2] ⊕ A[x,3] ⊕ A[x,4], ∀ x in 0...4
+  ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
+  call $theta_assignment
+  ; A[x,y] = A[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
+  ret
 
 rho_pi:
   call $rotate_by_triangular_number
