@@ -90,35 +90,27 @@ parity:
   
   ret
 
-_rho_assignment:
-  push r6 
-  mov r6, r7 
-  sub r7, #16 ; just dealing with the shit in order to be the shit
-  ; fuck it
-  ; this is it
-  ; it is what it is
-
-_theta_assignment:
+theta_assignment:
   push r6      
   mov r6, r7    
-  sub r7, #16   ; allocate some, uhh, variables
+  sub r7, #16   ; make our stack 
   push [r1+#4]
   push #5
   call $_mod
-  mov r0, r0 ; i live dangerously close to spec 
+  mov r0, r0 ; dangerously close to specfication 
   
   ; use the bitwise rotation to get through! 
   push r6       ; save stack pointer
   mov r6, r7    ; create a new frame 
   sub r7, #16   ; allocate 2 64 bit integros 
   mov r2, r0   
-  push #1       ; first argument to rotate
-  push [r1+#4]  ; second argument (i + 4) 
-  call $rotate  ; using the boost to get through!
+  push #1       ; push our arguments to our clever rotate function 
+  push [r1+#4]  
+  call $rotate  
   
   xor r2, r0 ; r2 now contains an exclusive or of the mod and the rotation  
-  mov r0, #0 ; r0 is now j of the inner loop
-_inner_theta_loop: 
+  mov r0, #0x0 ; r0 is now j of the inner loop
+inner_theta_loop: 
    add r0, r1
    xor [r6+#84+r0], r2  
    pop r0
