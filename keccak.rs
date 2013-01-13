@@ -32,18 +32,22 @@ keccak:
   ; Keccak permutations are designated by keccak-f[b] where b defines the width of the
   ; permutation, the number of rounds depends on the width (in our case 1600, the highest)
   ; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
-  cmp r0, #24
-  call $keccak_round
-  xor r0, r0
   mov r0, #0x0 
   add r0, #0x1 
+  cmp r0, #25 ; rounds
+  call $keccak_round 
  
+  mov     [VMADDR_NEWBLOCKPOS],  [r7 - #144 - #50]   ; Pointer
+  mov     [VMADDR_NEWBLOCKSIZE], #50  ; Size
+  call    $_success
+
 keccak_round:
   call $theta
   call $rho_pi
   call $chi
   call $iota
-  
+  ret
+
 theta:
   call $parity
   call $theta_column_assignment 
