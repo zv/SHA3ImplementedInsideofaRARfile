@@ -104,8 +104,9 @@ theta_assignment:
   mov r6, r7    ; create a new frame 
   sub r7, #16   ; allocate 2 64 bit integros 
   mov r2, r0   
-  push #1       ; push our arguments to our clever rotate function 
+  push [r1+#8]  
   push [r1+#4]  
+  push #1       ; push our arguments to our clever rotate function 
   call $rotate  
   
   xor r2, r0 ; r2 now contains an exclusive or of the mod and the rotation  
@@ -147,7 +148,8 @@ rho_pi:
 ;    1,  3,  6,  10, 15, 21, 28, 36, 45, 55, 2,  14,  27, 41, 56, 8,  25, 43, 62, 18, 39, 61, 20, 44
 
   mov r0, ST[1]
-  push r0 ; x
+  push [r0+4] ; x
+  push [r0] ; x
   push #1 ; y
   call rotate
    
@@ -158,26 +160,31 @@ rho_pi:
 ; thanks HACKMEM! 
 ; mad respect from the youth of today!
 _rotate:
-  and count, 0x3F
-  cmp count, 0x1F
+  pop r0 ; r0 contains the count
+  pop r1 ; r1 contains the low value
+  pop r2 ; r2 contains the high value
+  and r0, 0x3F
+  cmp r0, 0x1F
   jbe inf32
-  mov tmp, low
-  mov low, high
-  mov high, tmp
-  and count, 0x1F
+  ; swap our values 
+  mov r3, r1 
+  mov r1, r2 
+  mov r2, r3 
+  and  r0, 0x1F
   inf32:
-  mov tmpcount, 32
-  sub tmpcount, count
-  mov tmp2, high
-  shr tmp2, tmpcount
-  mov tmp, tmp2
-  mov tmp2, low
-  shl tmp2, count
-  or tmp, tmp2
-  shl high, count
-  shr low, tmpcount
-  or high, low
-  mov low, tmp2 
+  ; hakmem magic ahead
+  mov r5, 32
+  sub r5, r0
+  mov r4, r2
+  shr r4, r5
+  mov r4, r4
+  mov r4, r1
+  shl r4, r0
+  or r4, r4
+  shl r2, r0
+  shr r1, r5
+  or r2, r1
+  mov r1, r4 
   
 
   
