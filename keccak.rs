@@ -65,60 +65,36 @@ chi:
 iota:
   call $lsfr
 
-; here's a haiku that describes this function 
-; 32 bit word here
-; standard calls for 64 bit
-; xor them seperately
-parity:
-  mov r1, [r0]      ; set the lower value of bc[i]
-  xor r1, [r0+64]   ; now xor the lower 32 bits
-  xor r1, [r0+128]
-  xor r1, [r0+192]  
-  xor r1, [r0+256]  
-  mov [r6+#4+r4], r1 
-
-  mov r1, [r0+32]  ; set the upper value of bc[i] 
-  xor r1, [r0+96]  ; now xor the higher 32 bits
-  xor r1, [r0+160]
-  xor r1, [r0+288]  
-  mov [r6+#8+r4], r1 
-  
-  ; loop
-  cmp r2, #5
-  add r2, #1
-  jnz $parity 
-  
-  ret
 
 theta_assignment:
-  push r6      
-  mov r6, r7    
-  sub r7, #16   ; make our stack 
+  push r6
+  mov r6, r7
+  sub r7, #16            ; make our stack
   push [r1+#4]
   push #5
   call $_mod
-  mov r0, r0 ; dangerously close to specfication 
-  
-  ; use the bitwise rotation to get through! 
-  push r6       ; save stack pointer
-  mov r6, r7    ; create a new frame 
-  sub r7, #16   ; allocate 2 64 bit integros 
-  mov r2, r0   
-  push [r1+#8]  
-  push [r1+#4]  
-  push #1       ; push our arguments to our clever rotate function 
-  call $rotate  
-  
-  xor r2, r0 ; r2 now contains an exclusive or of the mod and the rotation  
-  mov r0, #0x0 ; r0 is now j of the inner loop
-inner_theta_loop: 
+  mov r0, r0             ; i live dangerously close to specfication
+
+                         ; use the bitwise rotation to get through!
+  push r6                ; save stack pointer
+  mov r6, r7             ; create a new frame
+  sub r7, #16            ; allocate 2 64 bit integros
+  mov r2, r0
+  push [r1+#8]
+  push [r1+#4]
+  push #1                ; push our arguments to our clever rotate function
+  call $rotate
+
+  xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
+  mov r0, #0x0           ; r0 is now j of the inner loop
+inner_theta_loop:
    add r0, r1
-   xor [r6+#84+r0], r2  
+   xor [r6+#84+r0], r2
    pop r0
-   cmp r0, #25  
+   cmp r0, #25
    mov r0, [r0+#5]
    jnz $inner_theta_loop
-   ; jnz $_theta_assignment   
+                         ; jnz $_theta_assignment
    jmp $rho_pi
   
  
@@ -186,6 +162,30 @@ _rotate:
   or r2, r1
   mov r1, r4 
   
+; here's a haiku that describes this function 
+; 32 bit word here
+; standard calls for 64 bit
+; xor them seperately
+parity:
+  mov r1, [r0]      ; set the lower value of bc[i]
+  xor r1, [r0+64]   ; now xor the lower 32 bits
+  xor r1, [r0+128]
+  xor r1, [r0+192]  
+  xor r1, [r0+256]  
+  mov [r6+#4+r4], r1 
+
+  mov r1, [r0+32]  ; set the upper value of bc[i] 
+  xor r1, [r0+96]  ; now xor the higher 32 bits
+  xor r1, [r0+160]
+  xor r1, [r0+288]  
+  mov [r6+#8+r4], r1 
+  
+  ; loop
+  cmp r2, #5
+  add r2, #1
+  jnz $parity 
+
+  ret
 
   
 _start:
