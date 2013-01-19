@@ -132,7 +132,33 @@ rho_pi:
  
   mov r0, r1
 
+; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
+chi:
+  pop r0 ; address of row state 
+  pop r1 ; bitwise combination pointer 
+  ; iterate over all our rows 
+  mov r2, #0
+  outer_chi_loop:
 
+    mov r3, #0 
+    row_assignment:
+      mov [r1+r3], r0[r2 + r3]     
+      add r3, 1
+      cmp r3, 5
+      jbe row_assignment 
+
+    mov r3, #0 
+    bitwise_combine_along_rows:
+      ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
+      cmp r3, 5
+      jbe row_assignment 
+
+  add r2, 5
+  cmp r2, 25
+  jbe outer_chi_loop
+  ret
+
+     
 ; thanks HACKMEM! 
 ; mad respect from the youth of today!
 _rotate:
