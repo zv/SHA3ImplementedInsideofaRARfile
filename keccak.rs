@@ -245,7 +245,7 @@ theta_assignment:
   call $rotate
 
   xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
-  mov r0, #0x0           ; r0 is now j of the inner loop
+  mov r0, #0           ; r0 is now j of the inner loop
   inner_theta_loop:
      add r0, r1
      xor [r6+#84+r0], r2
@@ -336,7 +336,7 @@ rotate:
   and  r0, #0x1F
   inf32:
   ; hakmem magic ahead
-  mov r5, 32
+  mov r5, #32
   sub r5, r0
   mov r4, r2
   shr r4, r5
