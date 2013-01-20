@@ -131,7 +131,6 @@ mov [RC_BASE+192], #0x80008008
  mov [TEST_VECTOR+#28], #0xcfaf3d3c
 
 
-
 _start:
   call $keccak
 
@@ -140,7 +139,6 @@ keccak:
   sub r7, #50      ; allocate the length of the returned message (25 64 bit ints)
   mov r3, [r7+#50] ; Output buffer.
   sub r7, #144     ; allocate some temporary space
-
   ; Keccak permutations are designated by keccak-f[b] where b defines the width of the
   ; permutation, the number of rounds depends on the width (in our case 1600, the highest)
   ; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
@@ -203,8 +201,6 @@ parity:
 
 
 theta_assignment:
-  push r6
-  mov r6, r7
   sub r7, #16            ; make our stack
   push [r1+#4]
   push #5
@@ -272,16 +268,16 @@ chi:
     mov r3, #0 
     row_assignment:
       mov [r1+r3], r0[r2 + r3]     
-      add r3, 1
-      cmp r3, 5
+      add r3, #1
+      cmp r3, #5
       jbe row_assignment 
     mov r3, #0 
     bitwise_combine_along_rows:
       ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
-      cmp r3, 5
+      cmp r3, #5
       jbe row_assignment 
-  add r2, 5
-  cmp r2, 25
+  add r2, #5
+  cmp r2, #25
   jbe outer_chi_loop
   ret
 
@@ -293,22 +289,25 @@ iota:
   mul r2, r1
   xor [r0], r2
   xor [r0+#4], r2 + #4 ; unlimited references, wuw. 
+  ret
 
      
-; thanks HACKMEM! 
-; mad respect from the youth of today!
-_rotate:
+; this function does bitwise rotation on a 64 bit value 
+; with 32 bits of precision
+; adapted from similar HACKMEM algorithm!
+; ( mad respect from the youth of today! )
+rotate:
   pop r0 ; r0 contains the count
   pop r1 ; r1 contains the low value
   pop r2 ; r2 contains the high value
-  and r0, 0x3F
-  cmp r0, 0x1F
+  and r0, #0x3F
+  cmp r0, #0x1F
   jbe inf32
   ; swap our values 
   mov r3, r1 
   mov r1, r2 
   mov r2, r3 
-  and  r0, 0x1F
+  and  r0, #0x1F
   inf32:
   ; hakmem magic ahead
   mov r5, 32
