@@ -201,11 +201,9 @@ parity:
 
 
 theta_assignment:
-  sub r7, #16            ; make our stack
   push [r1+#4]
   push #5
   call $_mod
-  mov r0, r0             ; i live dangerously close to specfication
 
                          ; use the bitwise rotation to get through!
   push r6                ; save stack pointer
