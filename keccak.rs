@@ -203,6 +203,12 @@ chi:
 
 ;  a[0,0] = a[0,0] xor RC
 iota:
+  pop r0 ; contains a pointer to the first value of our state
+  pop r1 ; containts our round
+  mov r2, #4 
+  mul r2, r1
+  xor [r0], r2
+  xor [r0+#4], r2 + #4 ; unlimited references, wuw. 
 
      
 ; thanks HACKMEM! 
