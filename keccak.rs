@@ -62,6 +62,18 @@ mov [RC_BASE+184], #0x80000001
 mov [RC_BASE+188], #0x80000000
 mov [RC_BASE+192], #0x80008008
 
+#define TEST_VECTOR #0x00002000
+ ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
+ mov [TEST_VECTOR+#0],  #0xa8d71b07
+ mov [TEST_VECTOR+#4],  #0xf4af26a4
+ mov [TEST_VECTOR+#8],  #0xff21027f
+ mov [TEST_VECTOR+#12], #0x62ff6026
+ mov [TEST_VECTOR+#16], #0x7ff955c9
+ mov [TEST_VECTOR+#20], #0x63f042c4
+ mov [TEST_VECTOR+#24], #0x6da52ee3
+ mov [TEST_VECTOR+#28], #0xcfaf3d3c
+
+
 
 _start:
   call $keccak
