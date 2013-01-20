@@ -86,8 +86,7 @@ inner_theta_loop:
    mov r0, [r0+#5]
    jnz $inner_theta_loop
                          ; jnz $_theta_assignment
-   jmp $rho_pi
-  
+   ret 
  
 
 ;    10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4, 
