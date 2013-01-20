@@ -192,24 +192,28 @@ theta:
   ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
   ret
 
-; here's a haiku that describes this function 
+; heres a haiku that describes this function 
 ; 32 bit word here
 ; standard calls for 64 bit
 ; xor them seperately
 parity:
   mov r0, #0
   ; xor the lower 32 bits
-  mov [INT_BC+r0], [ROW_STATE + r0]      
-  xor [INT_BC+r0], [ROW_STATE + r0+#8]  
-  xor [INT_BC+r0], [ROW_STATE + r0+#16]
-  xor [INT_BC+r0], [ROW_STATE + r0+#24]  
-  xor [INT_BC+r0], [ROW_STATE + r0+#32]  
+  mov r1, r0 
+  add r1, ROW_STATE 
+  mov r2, r0
+  add r2, INT_BC
+  mov [r2+r0], [r1]      
+  xor [r2+r0], [r1+#8]  
+  xor [r2+r0], [r1+#16]
+  xor [r2+r0], [r1+#24]  
+  xor [r2+r0], [r1+#32]  
 
   ; now xor the higher 32 bits
-  mov [INT_BC+r0+#4], [ROW_STATE + r0+#4]  
-  xor [INT_BC+r0+#4], [ROW_STATE + r0+#12]  
-  xor [INT_BC+r0+#4], [ROW_STATE + r0+#20]
-  xor [INT_BC+r0+#4], [ROW_STATE + r0+#28]  
+  mov [r2+r0+#4], [r1+#4]  
+  xor [r2+r0+#4], [r1+#12]  
+  xor [r2+r0+#4], [r1+#20]
+  xor [r2+r0+#4], [r1+#28]  
   
   ; loop
   cmp r0, #5
@@ -235,42 +239,51 @@ theta_assignment:
 
   xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
   mov r0, #0           ; r0 is now j of the inner loop
-  inner_theta_loop:
-     add r0, r1
-     xor [r6+#84+r0], r2
-     pop r0
-     cmp r0, #24
-     mov r0, [r0+#5]
-     ja $inner_theta_loop
-     ret 
+
+inner_theta_loop:
+   add r0, r1
+   add r6, #84
+   xor [r6+r0], r2
+   pop r0
+   cmp r0, #24
+   mov r0, [r0+#5]
+   ja $inner_theta_loop
+   ret 
  
 ; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
 rho_pi:
-  pop r0 ; address of row state
   mov r1, #0 
-  mov r4, [ROW_STATE + #8] ; 2nd item (dbl word precision)
-  inner_pi:
-    mov [INT_BC], #0x00000000
-    ; iterate over the triangular numbers 0..24 
-    mov r2, [TRIANGLR_NUMS + r1] 
-    mov [INT_BC+#4], [ROW_STATE + r2]  
-    mov [ROW_STATE + r2]
-    
-    push #0x00000000
-    push r4
-    mov r3, [ROT_OFFSETS + r1]
-    push r3
-    call $rotate
-    pop r1 ; r1 now contains low value 
-    pop r3 ; r3 now contains high value
-    mov [ROW_STATE + r2], r3 
-    mov [ROW_STATE + r2 + #4], r1
-    mov r4, [INT_BC] 
-    mov r4+#4, [INT_BC+#4]
+  mov r5, ROW_STATE
+  mov r4, [r5+#8] ; 2nd item (dbl word precision)
+inner_pi:
+  mov r0, INT_BC
+  mov [r0], #0x00000000
+  ; iterate over the triangular numbers 0..24 
+  mov r0, TRIANGLR_NUMS 
+  mov r2, [r0+r1] 
+  mov r0, INT_BC 
+  mov [r0+#4], [r5+r2]  
+  mov r4, [r5+r2]
+  
+  push #0x00000000
+  push r4
+  mov r0, ROT_OFFSETS
+  mov r3, [r0+r1]
+  push r3
+  call $rotate
+  pop r1 ; r1 now contains low value 
+  pop r3 ; r3 now contains high value
+  mov [r5+r2], r3 
+  add r2, #4
+  mov [r5+r2], r1
+  mov r0, INT_BC
+  mov r4, [r0] 
+  mov [r4+#4], [r0+#4]
 
-    add r1, #1
-    cmp r1, #24 
-    ja inner_pi 
+
+  add r1, #1
+  cmp r1, #24 
+  ja $inner_pi 
   ret
  
 ; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
@@ -279,21 +292,25 @@ chi:
   pop r1 ; bitwise combination pointer 
   ; iterate over all our rows 
   mov r2, #0
-  outer_chi_loop:
-    mov r3, #0 
-    row_assignment:
-      mov [r1+r3], r0[r2 + r3]     
-      add r3, #1
-      cmp r3, #5
-      ja row_assignment 
-    mov r3, #0 
-    bitwise_combine_along_rows:
-      ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
-      cmp r3, #5
-      ja row_assignment 
+  mov r4, ROW_STATE
+  mov r5, INT_BC
+outer_chi_loop:
+  mov r3, #0 
+row_assignment:
+  mov [r5+r3], [r4+ r3 + r2] 
+  add r3, #1
+  cmp r3, #5
+  ja $row_assignment 
+
+  mov r3, #0 
+bitwise_combine_along_rows:
+  ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
+  cmp r3, #5
+  ja $bitwise_combine_along_rows 
+
   add r2, #5
   cmp r2, #25
-  ja outer_chi_loop
+  ja $outer_chi_loop
   ret
 
 ;  a[0,0] = a[0,0] xor RC
@@ -303,7 +320,7 @@ iota:
   mov r2, #4 
   mul r2, r1
   xor [r0], r2
-  xor [r0+#4], r2 + #4 ; unlimited references, wuw. 
+  xor [r0+#4], [r2+#4] ; unlimited references, wuw. 
   ret
 
      
@@ -317,13 +334,13 @@ rotate:
   pop r2 ; r2 contains the high value
   and r0, #0x3F
   cmp r0, #0x1F
-  jbe inf32
+  jbe $inf32
   ; swap our values 
   mov r3, r1 
   mov r1, r2 
   mov r2, r3 
   and  r0, #0x1F
-  inf32:
+inf32:
   ; hakmem magic ahead
   mov r5, #32
   sub r5, r0
