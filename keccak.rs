@@ -170,8 +170,8 @@ keccak_round:
 
 theta:
   call $parity
-  ; C[x] = A[x,0] ⊕ A[x,1] ⊕ A[x,2] ⊕ A[x,3] ⊕ A[x,4], ∀ x in 0...4
-  ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
+  ; C[x] = ROW_STATE[x,0] ⊕ OW_STATE[x,1] ⊕ ROW_STATE[x,2] ⊕ ROW_STATE[x,3] ⊕ ROW_STATE[x,4], ∀ x in 0...4
+  ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
   call $theta_assignment
   ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
   ret
