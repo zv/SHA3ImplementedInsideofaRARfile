@@ -11,141 +11,123 @@
 ; just kidding
 ; MIT LICENSE - FREE FOR REDISTRIBUTION
 
-
-; Define Rotation Offsets
-#define ROT_OFFSETS #0x00001200
-mov [ROT_OFFSETS+4], #1
-mov [ROT_OFFSETS+8], #3
-mov [ROT_OFFSETS+12], #6
-mov [ROT_OFFSETS+16], #10
-mov [ROT_OFFSETS+20], #15
-mov [ROT_OFFSETS+24], #21
-mov [ROT_OFFSETS+28], #28
-mov [ROT_OFFSETS+32], #36
-mov [ROT_OFFSETS+36], #45
-mov [ROT_OFFSETS+40], #55
-mov [ROT_OFFSETS+44], #2
-mov [ROT_OFFSETS+48], #14
-mov [ROT_OFFSETS+52], #27
-mov [ROT_OFFSETS+56], #41
-mov [ROT_OFFSETS+60], #56
-mov [ROT_OFFSETS+64], #8
-mov [ROT_OFFSETS+68], #25
-mov [ROT_OFFSETS+72], #43
-mov [ROT_OFFSETS+76], #62
-mov [ROT_OFFSETS+80], #18
-mov [ROT_OFFSETS+84], #39
-mov [ROT_OFFSETS+88], #61
-mov [ROT_OFFSETS+92], #20
-mov [ROT_OFFSETS+96], #44
-
-; Define Triangular Numbers
-#define TRIANGLR_NUMS #0x00002096
-mov [TRIANGLR_NUMS+4], #10
-mov [TRIANGLR_NUMS+8], #7
-mov [TRIANGLR_NUMS+12], #11
-mov [TRIANGLR_NUMS+16], #17
-mov [TRIANGLR_NUMS+20], #18
-mov [TRIANGLR_NUMS+24], #3
-mov [TRIANGLR_NUMS+28], #5
-mov [TRIANGLR_NUMS+32], #16
-mov [TRIANGLR_NUMS+36], #8
-mov [TRIANGLR_NUMS+40], #21
-mov [TRIANGLR_NUMS+44], #24
-mov [TRIANGLR_NUMS+48], #4
-mov [TRIANGLR_NUMS+52], #15
-mov [TRIANGLR_NUMS+56], #23
-mov [TRIANGLR_NUMS+60], #19
-mov [TRIANGLR_NUMS+64], #13
-mov [TRIANGLR_NUMS+68], #12
-mov [TRIANGLR_NUMS+72], #2
-mov [TRIANGLR_NUMS+76], #20
-mov [TRIANGLR_NUMS+80], #14
-mov [TRIANGLR_NUMS+84], #22
-mov [TRIANGLR_NUMS+88], #9
-mov [TRIANGLR_NUMS+92], #6
-mov [TRIANGLR_NUMS+96], #1 
-
-; Define Reference Constants
-#define RC_BASE #0x00001000
-mov [RC_BASE+4],   #0x00000001
-mov [RC_BASE+8],   #0x00000001
-mov [RC_BASE+12],  #0x00000000
-mov [RC_BASE+16],  #0x00008082
-mov [RC_BASE+20],  #0x80000000
-mov [RC_BASE+24],  #0x0000808a
-mov [RC_BASE+28],  #0x80000000
-mov [RC_BASE+32],  #0x80008000
-mov [RC_BASE+36],  #0x00000000
-mov [RC_BASE+40],  #0x0000808b
-mov [RC_BASE+44],  #0x00000000
-mov [RC_BASE+48],  #0x80000001
-mov [RC_BASE+52],  #0x80000000
-mov [RC_BASE+56],  #0x80008081
-mov [RC_BASE+60],  #0x80000000
-mov [RC_BASE+64],  #0x00008009
-mov [RC_BASE+68],  #0x00000000
-mov [RC_BASE+72],  #0x0000008a
-mov [RC_BASE+76],  #0x00000000
-mov [RC_BASE+80],  #0x00000088
-mov [RC_BASE+84],  #0x00000000
-mov [RC_BASE+88],  #0x80008009
-mov [RC_BASE+92],  #0x00000000
-mov [RC_BASE+96],  #0x8000000a
-mov [RC_BASE+100], #0x00000000
-mov [RC_BASE+104], #0x8000808b
-mov [RC_BASE+108], #0x80000000
-mov [RC_BASE+112], #0x0000008b
-mov [RC_BASE+116], #0x80000000
-mov [RC_BASE+120], #0x00008089
-mov [RC_BASE+124], #0x80000000
-mov [RC_BASE+128], #0x00008003
-mov [RC_BASE+132], #0x80000000
-mov [RC_BASE+136], #0x00008002
-mov [RC_BASE+140], #0x80000000
-mov [RC_BASE+144], #0x00000080
-mov [RC_BASE+148], #0x00000000
-mov [RC_BASE+152], #0x0000800a
-mov [RC_BASE+156], #0x80000000
-mov [RC_BASE+160], #0x8000000a
-mov [RC_BASE+164], #0x80000000
-mov [RC_BASE+168], #0x80008081
-mov [RC_BASE+172], #0x80000000
-mov [RC_BASE+176], #0x00008080
-mov [RC_BASE+180], #0x00000000
-mov [RC_BASE+184], #0x80000001
-mov [RC_BASE+188], #0x80000000
-mov [RC_BASE+192], #0x80008008
-
-
-#define INT_BC  #0x00003000 ; used internally
-
-
-#define TEST_VECTOR #0x00002000
- ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
- mov [TEST_VECTOR+#0],  #0xa8d71b07
- mov [TEST_VECTOR+#4],  #0xf4af26a4
- mov [TEST_VECTOR+#8],  #0xff21027f
- mov [TEST_VECTOR+#12], #0x62ff6026
- mov [TEST_VECTOR+#16], #0x7ff955c9
- mov [TEST_VECTOR+#20], #0x63f042c4
- mov [TEST_VECTOR+#24], #0x6da52ee3
- mov [TEST_VECTOR+#28], #0xcfaf3d3c
-
-#define TEST_VECTOR_LEN #28 
-
-; This number is not magic
-; it is derived from 200 - (2 * Message Digest Length)
-; where mdlen = 32, the mdlen of SHA-256
-#define RSIZ #72 
-#define RSIZW #9 ; RSIZ / 8 
-
-; Keccak permutations are designated by keccak-f[b] where b defines the width of the
-; permutation, the number of rounds depends on the width (in our case 1600, the highest)
-; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
-#define KECCAK_ROUNDS #24
-
 _start:
+  ; set our keccak spec defined rotation offsets 
+  mov r0, ROT_OFFSETS
+  mov [r0+#4], #1
+  mov [r0+#8], #3
+  mov [r0+#12], #6
+  mov [r0+#16], #10
+  mov [r0+#20], #15
+  mov [r0+#24], #21
+  mov [r0+#28], #28
+  mov [r0+#32], #36
+  mov [r0+#36], #45
+  mov [r0+#40], #55
+  mov [r0+#44], #2
+  mov [r0+#48], #14
+  mov [r0+#52], #27
+  mov [r0+#56], #41
+  mov [r0+#60], #56
+  mov [r0+#64], #8
+  mov [r0+#68], #25
+  mov [r0+#72], #43
+  mov [r0+#76], #62
+  mov [r0+#80], #18
+  mov [r0+#84], #39
+  mov [r0+#88], #61
+  mov [r0+#92], #20
+  mov [r0+#96], #44
+
+  ; define some triangular numbers 
+  mov r0, TRIANGLR_NUMS
+  mov [r0+#4], #10
+  mov [r0+#8], #7
+  mov [r0+#12], #11
+  mov [r0+#16], #17
+  mov [r0+#20], #18
+  mov [r0+#24], #3
+  mov [r0+#28], #5
+  mov [r0+#32], #16
+  mov [r0+#36], #8
+  mov [r0+#40], #21
+  mov [r0+#44], #24
+  mov [r0+#48], #4
+  mov [r0+#52], #15
+  mov [r0+#56], #23
+  mov [r0+#60], #19
+  mov [r0+#64], #13
+  mov [r0+#68], #12
+  mov [r0+#72], #2
+  mov [r0+#76], #20
+  mov [r0+#80], #14
+  mov [r0+#84], #22
+  mov [r0+#88], #9
+  mov [r0+#92], #6
+  mov [r0+#96], #1 
+
+  ; define our round constants (64 w/ 32 bit words, hence the doubling) 
+  mov r0, RC_BASE
+  mov [r0+#4], #0x00000001
+  mov [r0+#8], #0x00000001
+  mov [r0+#12], #0x00000000
+  mov [r0+#16], #0x00008082
+  mov [r0+#20], #0x80000000
+  mov [r0+#24], #0x0000808a
+  mov [r0+#28], #0x80000000
+  mov [r0+#32], #0x80008000
+  mov [r0+#36], #0x00000000
+  mov [r0+#40], #0x0000808b
+  mov [r0+#44], #0x00000000
+  mov [r0+#48], #0x80000001
+  mov [r0+#52], #0x80000000
+  mov [r0+#56], #0x80008081
+  mov [r0+#60], #0x80000000
+  mov [r0+#64], #0x00008009
+  mov [r0+#68], #0x00000000
+  mov [r0+#72], #0x0000008a
+  mov [r0+#76], #0x00000000
+  mov [r0+#80], #0x00000088
+  mov [r0+#84], #0x00000000
+  mov [r0+#88], #0x80008009
+  mov [r0+#92], #0x00000000
+  mov [r0+#96], #0x8000000a
+  mov [r0+#100], #0x00000000
+  mov [r0+#104], #0x8000808b
+  mov [r0+#108], #0x80000000
+  mov [r0+#112], #0x0000008b
+  mov [r0+#116], #0x80000000
+  mov [r0+#120], #0x00008089
+  mov [r0+#124], #0x80000000
+  mov [r0+#128], #0x00008003
+  mov [r0+#132], #0x80000000
+  mov [r0+#136], #0x00008002
+  mov [r0+#140], #0x80000000
+  mov [r0+#144], #0x00000080
+  mov [r0+#148], #0x00000000
+  mov [r0+#152], #0x0000800a
+  mov [r0+#156], #0x80000000
+  mov [r0+#160], #0x8000000a
+  mov [r0+#164], #0x80000000
+  mov [r0+#168], #0x80008081
+  mov [r0+#172], #0x80000000
+  mov [r0+#176], #0x00008080
+  mov [r0+#180], #0x00000000
+  mov [r0+#184], #0x80000001
+  mov [r0+#188], #0x80000000
+  mov [r0+#192], #0x80008008
+
+  ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
+  mov r0, TEST_VECTOR
+  mov [r0+#0], #0xa8d71b07
+  mov [r0+#4], #0xf4af26a4
+  mov [r0+#8], #0xff21027f
+  mov [r0+#12], #0x62ff6026
+  mov [r0+#16], #0x7ff955c9
+  mov [r0+#20], #0x63f042c4
+  mov [r0+#24], #0x6da52ee3
+  mov [r0+#28], #0xcfaf3d3c
+
   call $keccak
 
 keccak:
