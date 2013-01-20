@@ -119,6 +119,7 @@ mov [RC_BASE+192], #0x80008008
 
 #define INT_BC  #0x00003000 ; used internally
 
+
 #define TEST_VECTOR #0x00002000
  ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
  mov [TEST_VECTOR+#0],  #0xa8d71b07
@@ -175,8 +176,8 @@ keccak:
     add r1, RSIZ
     cmp TEST_VECTOR_LEN, #24 ; rounds
     jge $keccak_round 
-  mov     [VMADDR_NEWBLOCKPOS],  [r7 - #144 - #50]   ; Pointer
-  mov     [VMADDR_NEWBLOCKSIZE], #50  ; Size
+  mov     [VMADDR_NEWBLOCKPOS],  [ROW_STATE]   ; Pointer
+  mov     [VMADDR_NEWBLOCKSIZE], TEST_VECTOR_LEN  ; Size
   call    $_success
 
 _keccak_round:
