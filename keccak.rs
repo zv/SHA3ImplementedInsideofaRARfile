@@ -2,6 +2,7 @@
 #include <crctools.rh>
 #include <math.rh>
 #include <util.rh>
+#include <keccak.rh>
 ; vim: syntax=fasm
 ; 10-08-2012 
 ; - zv
