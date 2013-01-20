@@ -130,6 +130,18 @@ mov [RC_BASE+192], #0x80008008
  mov [TEST_VECTOR+#24], #0x6da52ee3
  mov [TEST_VECTOR+#28], #0xcfaf3d3c
 
+#define TEST_VECTOR_LEN #28 
+
+; This number is not magic
+; it is derived from 200 - (2 * Message Digest Length)
+; where mdlen = 32, the mdlen of SHA-256
+#define RSIZ #72 
+#define RSIZW #9 ; RSIZ / 8 
+
+; Keccak permutations are designated by keccak-f[b] where b defines the width of the
+; permutation, the number of rounds depends on the width (in our case 1600, the highest)
+; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
+#define KECCAK_ROUNDS #24
 
 _start:
   call $keccak
