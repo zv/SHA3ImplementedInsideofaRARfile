@@ -72,7 +72,7 @@ keccak:
   mov r3, [r7+#50] ; Output buffer.
   sub r7, #144     ; allocate some temporary space
 
-   ; the test vector for 24 round Keccak-256 "Keccak-256 Test Hash"
+   ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
    mov [r0+#0],  #0xa8d71b07
    mov [r0+#4],  #0xf4af26a4
    mov [r0+#8],  #0xff21027f
