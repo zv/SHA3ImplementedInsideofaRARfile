@@ -203,33 +203,6 @@ theta_assignment:
 
 
 rho_pi:
-; this is so ghetto
-; but then again so am i
-;
-; the main insight of this algorithm is to take some value out of 
-; the positional ilngt, rotl it and modify the original string supplied
-; to the so called "algorithm" 
-;  push r6     ; you know what this does
-;  mov r6, r7  ; activate the frames batman!
-;       t = st[1];
-;        for (i = 0; i < 24; i++) {
-;            j = keccakf_piln[i];
-;            bc[0] = st[j];
-;            st[j] = ROTL64(t, keccakf_rotc[i]);
-;            t = bc[0];
-;        }
-
-; the triangles 
-;    1,  3,  6,  10, 15, 21, 28, 36, 45, 55, 2,  14,  27, 41, 56, 8,  25, 43, 62, 18, 39, 61, 20, 44
-
-  mov r0, ST[1]
-  push [r0+4] ; x
-  push [r0] ; x
-  push #1 ; y
-  call rotate
-   
- 
-  mov r0, r1
 
 ; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
 chi:
