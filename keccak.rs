@@ -151,19 +151,35 @@ keccak:
   sub r7, #50      ; allocate the length of the returned message (25 64 bit ints)
   mov r3, [r7+#50] ; Output buffer.
   sub r7, #144     ; allocate some temporary space
-  ; Keccak permutations are designated by keccak-f[b] where b defines the width of the
-  ; permutation, the number of rounds depends on the width (in our case 1600, the highest)
-  ; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
-  mov r0, #0x0 
-  add r0, #0x1 
-  cmp r0, #25 ; rounds
-  call $keccak_round 
- 
+  
+  ; Absorbing phase
+  ; defined in case you need to change the size of your input vector
+  ; forall block Pi in P
+  ;   S[x,y] = S[x,y] xor Pi[x+5*y],          forall (x,y) such that x+5*y < r/w
+  ;   S = Keccak-f[r+c](S)
+  mov r0, RSIZ
+  mov r1, TEST_VECTOR_LEN
+  keccak_round: 
+    push    r6   
+    mov     r6, r7
+    mov r2, #0
+    xor_slice:
+      ; xor twice because we've only got 32 bits of precision here
+      ; and we are operating on 64 bit values, keep this in mind 
+      xor [ROW_STATE + r2], [TEST_VECTOR+r2] 
+      xor [ROW_STATE + r2 + #4], [TEST_VECTOR+r2+#4] 
+      cmp r2, RSIZW
+      jge xor_slice
+    call $_keccak_round 
+    sub r0, RSIZ 
+    add r1, RSIZ
+    cmp TEST_VECTOR_LEN, #24 ; rounds
+    jge $keccak_round 
   mov     [VMADDR_NEWBLOCKPOS],  [r7 - #144 - #50]   ; Pointer
   mov     [VMADDR_NEWBLOCKSIZE], #50  ; Size
   call    $_success
 
-keccak_round:
+_keccak_round:
   push    r6   
   mov     r6, r7
   call $theta
