@@ -56,15 +56,6 @@ theta:
   ; A[x,y] = A[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
   ret
 
-rho_pi:
-  call $rotate_by_triangular_number
-  
-chi:
-  call $bitwise_combine_along_rows
-  
-iota:
-  call $lsfr
-
 
 theta_assignment:
   push r6
