@@ -131,15 +131,15 @@ theta_assignment:
 
   xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
   mov r0, #0x0           ; r0 is now j of the inner loop
-inner_theta_loop:
-   add r0, r1
-   xor [r6+#84+r0], r2
-   pop r0
-   cmp r0, #25
-   mov r0, [r0+#5]
-   jnz $inner_theta_loop
-                         ; jnz $_theta_assignment
-   ret 
+  inner_theta_loop:
+     add r0, r1
+     xor [r6+#84+r0], r2
+     pop r0
+     cmp r0, #25
+     mov r0, [r0+#5]
+     jnz $inner_theta_loop
+     ; jnz $_theta_assignment
+     ret 
  
 
 ;    10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4, 
@@ -182,20 +182,17 @@ chi:
   ; iterate over all our rows 
   mov r2, #0
   outer_chi_loop:
-
     mov r3, #0 
     row_assignment:
       mov [r1+r3], r0[r2 + r3]     
       add r3, 1
       cmp r3, 5
       jbe row_assignment 
-
     mov r3, #0 
     bitwise_combine_along_rows:
       ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
       cmp r3, 5
       jbe row_assignment 
-
   add r2, 5
   cmp r2, 25
   jbe outer_chi_loop
