@@ -200,13 +200,35 @@ theta_assignment:
      ; jnz $_theta_assignment
      ret 
  
-
-;    10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4, 
-;    15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1 
-
-
+; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
 rho_pi:
+  pop r0 ; address of row state
+  mov r1, #0 
+  mov r4, [ROW_STATE + #8] ; 2nd item (dbl word precision)
+  inner_pi:
+    mov [INT_BC], #0x00000000
+    ; iterate over the triangular numbers 0..24 
+    mov r2, [TRIANGLR_NUMS + r1] 
+    mov [INT_BC+#4], [ROW_STATE + r2]  
+    mov [ROW_STATE + r2]
+    
+    push #0x00000000
+    push r4
+    mov r3, [ROT_OFFSETS + r1]
+    push r3
+    call $rotate
+    pop r1 ; r1 now contains low value 
+    pop r3 ; r3 now contains high value
+    mov [ROW_STATE + r2], r3 
+    mov [ROW_STATE + r2 + #4], r1
+    mov r4, [INT_BC] 
+    mov r4+#4, [INT_BC+#4]
 
+    add r1, #1
+    cmp r1, #24 
+    jbe inner_pi 
+  ret
+ 
 ; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
 chi:
   pop r0 ; address of row state 
