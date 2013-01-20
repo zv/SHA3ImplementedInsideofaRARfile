@@ -10,6 +10,59 @@
 ; just kidding
 ; MIT LICENSE - FREE FOR REDISTRIBUTION
 
+; Define Reference Constants
+#define RC_BASE #0x00001000
+
+mov [RC_BASE+4],   #0x00000001
+mov [RC_BASE+8],   #0x00000001
+mov [RC_BASE+12],  #0x00000000
+mov [RC_BASE+16],  #0x00008082
+mov [RC_BASE+20],  #0x80000000
+mov [RC_BASE+24],  #0x0000808a
+mov [RC_BASE+28],  #0x80000000
+mov [RC_BASE+32],  #0x80008000
+mov [RC_BASE+36],  #0x00000000
+mov [RC_BASE+40],  #0x0000808b
+mov [RC_BASE+44],  #0x00000000
+mov [RC_BASE+48],  #0x80000001
+mov [RC_BASE+52],  #0x80000000
+mov [RC_BASE+56],  #0x80008081
+mov [RC_BASE+60],  #0x80000000
+mov [RC_BASE+64],  #0x00008009
+mov [RC_BASE+68],  #0x00000000
+mov [RC_BASE+72],  #0x0000008a
+mov [RC_BASE+76],  #0x00000000
+mov [RC_BASE+80],  #0x00000088
+mov [RC_BASE+84],  #0x00000000
+mov [RC_BASE+88],  #0x80008009
+mov [RC_BASE+92],  #0x00000000
+mov [RC_BASE+96],  #0x8000000a
+mov [RC_BASE+100], #0x00000000
+mov [RC_BASE+104], #0x8000808b
+mov [RC_BASE+108], #0x80000000
+mov [RC_BASE+112], #0x0000008b
+mov [RC_BASE+116], #0x80000000
+mov [RC_BASE+120], #0x00008089
+mov [RC_BASE+124], #0x80000000
+mov [RC_BASE+128], #0x00008003
+mov [RC_BASE+132], #0x80000000
+mov [RC_BASE+136], #0x00008002
+mov [RC_BASE+140], #0x80000000
+mov [RC_BASE+144], #0x00000080
+mov [RC_BASE+148], #0x00000000
+mov [RC_BASE+152], #0x0000800a
+mov [RC_BASE+156], #0x80000000
+mov [RC_BASE+160], #0x8000000a
+mov [RC_BASE+164], #0x80000000
+mov [RC_BASE+168], #0x80008081
+mov [RC_BASE+172], #0x80000000
+mov [RC_BASE+176], #0x00008080
+mov [RC_BASE+180], #0x00000000
+mov [RC_BASE+184], #0x80000001
+mov [RC_BASE+188], #0x80000000
+mov [RC_BASE+192], #0x80008008
+
+
 _start:
   call $keccak
 
@@ -150,56 +203,6 @@ chi:
 
 ;  a[0,0] = a[0,0] xor RC
 iota:
-  ; Not wanting to store a reference to the reference constants
-  ; I've elected to store them 'unrolled' as 32 bits ints, in place.
-  mov [r0+4], 0x00000000
-  mov [r0+8], 0x00000001
-  mov [r0+12], 0x00000000
-  mov [r0+16], 0x00008082
-  mov [r0+20], 0x80000000
-  mov [r0+24], 0x0000808a
-  mov [r0+28], 0x80000000
-  mov [r0+32], 0x80008000
-  mov [r0+36], 0x00000000
-  mov [r0+40], 0x0000808b
-  mov [r0+44], 0x00000000
-  mov [r0+48], 0x80000001
-  mov [r0+52], 0x80000000
-  mov [r0+56], 0x80008081
-  mov [r0+60], 0x80000000
-  mov [r0+64], 0x00008009
-  mov [r0+68], 0x00000000
-  mov [r0+72], 0x0000008a
-  mov [r0+76], 0x00000000
-  mov [r0+80], 0x00000088
-  mov [r0+84], 0x00000000
-  mov [r0+88], 0x80008009
-  mov [r0+92], 0x00000000
-  mov [r0+96], 0x8000000a
-  mov [r0+100], 0x00000000
-  mov [r0+104], 0x8000808b
-  mov [r0+108], 0x80000000
-  mov [r0+112], 0x0000008b
-  mov [r0+116], 0x80000000
-  mov [r0+120], 0x00008089
-  mov [r0+124], 0x80000000
-  mov [r0+128], 0x00008003
-  mov [r0+132], 0x80000000
-  mov [r0+136], 0x00008002
-  mov [r0+140], 0x80000000
-  mov [r0+144], 0x00000080
-  mov [r0+148], 0x00000000
-  mov [r0+152], 0x0000800a
-  mov [r0+156], 0x80000000
-  mov [r0+160], 0x8000000a
-  mov [r0+164], 0x80000000
-  mov [r0+168], 0x80008081
-  mov [r0+172], 0x80000000
-  mov [r0+176], 0x00008080
-  mov [r0+180], 0x00000000
-  mov [r0+184], 0x80000001
-  mov [r0+188], 0x80000000
-  mov [r0+192], 0x80008008
 
      
 ; thanks HACKMEM! 
