@@ -170,12 +170,12 @@ keccak:
       xor [ROW_STATE + r2], [TEST_VECTOR+r2] 
       xor [ROW_STATE + r2 + #4], [TEST_VECTOR+r2+#4] 
       cmp r2, RSIZW
-      jge xor_slice
+      ja xor_slice
     call $_keccak_round 
     sub r0, RSIZ 
     add r1, RSIZ
     cmp TEST_VECTOR_LEN, #24 ; rounds
-    jge $keccak_round 
+    ja $keccak_round 
   mov     [VMADDR_NEWBLOCKPOS],  [ROW_STATE]   ; Pointer
   mov     [VMADDR_NEWBLOCKSIZE], TEST_VECTOR_LEN  ; Size
   call    $_success
@@ -250,10 +250,9 @@ theta_assignment:
      add r0, r1
      xor [r6+#84+r0], r2
      pop r0
-     cmp r0, #25
+     cmp r0, #24
      mov r0, [r0+#5]
-     jnz $inner_theta_loop
-     ; jnz $_theta_assignment
+     ja $inner_theta_loop
      ret 
  
 ; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
@@ -282,7 +281,7 @@ rho_pi:
 
     add r1, #1
     cmp r1, #24 
-    jbe inner_pi 
+    ja inner_pi 
   ret
  
 ; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
@@ -297,15 +296,15 @@ chi:
       mov [r1+r3], r0[r2 + r3]     
       add r3, #1
       cmp r3, #5
-      jbe row_assignment 
+      ja row_assignment 
     mov r3, #0 
     bitwise_combine_along_rows:
       ; st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
       cmp r3, #5
-      jbe row_assignment 
+      ja row_assignment 
   add r2, #5
   cmp r2, #25
-  jbe outer_chi_loop
+  ja outer_chi_loop
   ret
 
 ;  a[0,0] = a[0,0] xor RC
