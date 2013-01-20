@@ -116,6 +116,9 @@ mov [RC_BASE+184], #0x80000001
 mov [RC_BASE+188], #0x80000000
 mov [RC_BASE+192], #0x80008008
 
+
+#define INT_BC  #0x00003000 ; used internally
+
 #define TEST_VECTOR #0x00002000
  ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
  mov [TEST_VECTOR+#0],  #0xa8d71b07
