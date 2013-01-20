@@ -163,6 +163,8 @@ keccak_round:
   push    r6   
   mov     r6, r7
   call $chi
+  push    r6   
+  mov     r6, r7
   call $iota
   ret
 
@@ -171,7 +173,32 @@ theta:
   ; C[x] = A[x,0] ⊕ A[x,1] ⊕ A[x,2] ⊕ A[x,3] ⊕ A[x,4], ∀ x in 0...4
   ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
   call $theta_assignment
-  ; A[x,y] = A[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
+  ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
+  ret
+
+; here's a haiku that describes this function 
+; 32 bit word here
+; standard calls for 64 bit
+; xor them seperately
+parity:
+  mov r0, #0
+  ; xor the lower 32 bits
+  mov [INT_BC+r0], [ROW_STATE + r0]      
+  xor [INT_BC+r0], [ROW_STATE + r0+#8]  
+  xor [INT_BC+r0], [ROW_STATE + r0+#16]
+  xor [INT_BC+r0], [ROW_STATE + r0+#24]  
+  xor [INT_BC+r0], [ROW_STATE + r0+#32]  
+
+  ; now xor the higher 32 bits
+  mov [INT_BC+r0+#4], [ROW_STATE + r0+#4]  
+  xor [INT_BC+r0+#4], [ROW_STATE + r0+#12]  
+  xor [INT_BC+r0+#4], [ROW_STATE + r0+#20]
+  xor [INT_BC+r0+#4], [ROW_STATE + r0+#28]  
+  
+  ; loop
+  cmp r0, #5
+  add r0, #1
+  jnz $parity 
   ret
 
 
@@ -296,31 +323,6 @@ _rotate:
   shr r1, r5
   or r2, r1
   mov r1, r4 
-  
-; here's a haiku that describes this function 
-; 32 bit word here
-; standard calls for 64 bit
-; xor them seperately
-parity:
-  mov r1, [r0]      ; set the lower value of bc[i]
-  xor r1, [r0+64]   ; now xor the lower 32 bits
-  xor r1, [r0+128]
-  xor r1, [r0+192]  
-  xor r1, [r0+256]  
-  mov [r6+#4+r4], r1 
-
-  mov r1, [r0+32]  ; set the upper value of bc[i] 
-  xor r1, [r0+96]  ; now xor the higher 32 bits
-  xor r1, [r0+160]
-  xor r1, [r0+288]  
-  mov [r6+#8+r4], r1 
-  
-  ; loop
-  cmp r2, #5
-  add r2, #1
-  jnz $parity 
-
+  push r1
+  push r2
   ret
-
-  
-_start:
