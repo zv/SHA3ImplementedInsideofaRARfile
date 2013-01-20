@@ -84,16 +84,6 @@ keccak:
   mov r3, [r7+#50] ; Output buffer.
   sub r7, #144     ; allocate some temporary space
 
-   ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
-   mov [r0+#0],  #0xa8d71b07
-   mov [r0+#4],  #0xf4af26a4
-   mov [r0+#8],  #0xff21027f
-   mov [r0+#12], #0x62ff6026
-   mov [r0+#16], #0x7ff955c9
-   mov [r0+#20], #0x63f042c4
-   mov [r0+#24], #0x6da52ee3
-   mov [r0+#28], #0xcfaf3d3c
-
   ; Keccak permutations are designated by keccak-f[b] where b defines the width of the
   ; permutation, the number of rounds depends on the width (in our case 1600, the highest)
   ; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
