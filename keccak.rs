@@ -143,25 +143,31 @@ keccak:
   ;   S = Keccak-f[r+c](S)
   mov r0, RSIZ
   mov r1, TEST_VECTOR_LEN
-  keccak_round: 
-    push    r6   
-    mov     r6, r7
-    mov r2, #0
-    xor_slice:
-      ; xor twice because we've only got 32 bits of precision here
-      ; and we are operating on 64 bit values, keep this in mind 
-      xor [ROW_STATE + r2], [TEST_VECTOR+r2] 
-      xor [ROW_STATE + r2 + #4], [TEST_VECTOR+r2+#4] 
-      cmp r2, RSIZW
-      ja xor_slice
-    call $_keccak_round 
-    sub r0, RSIZ 
-    add r1, RSIZ
-    cmp TEST_VECTOR_LEN, #24 ; rounds
-    ja $keccak_round 
+  mov r3, ROW_STATE
+  mov r4, TEST_VECTOR
+
+keccak_round: 
+  push    r6   
+  mov     r6, r7
+  mov r2, #0
+  call $xor_slice
+  ja $keccak_round 
   mov     [VMADDR_NEWBLOCKPOS],  [ROW_STATE]   ; Pointer
   mov     [VMADDR_NEWBLOCKSIZE], TEST_VECTOR_LEN  ; Size
   call    $_success
+
+xor_slice:
+  ; xor twice because weve only got 32 bits of precision here
+  ; and we are operating on 64 bit values, keep this in mind 
+  xor [r3+r2], [r4+r2] 
+  xor [r3+r2+#4], [r4+r2+#4] 
+  cmp r2, RSIZW
+  ja $xor_slice
+  call $_keccak_round 
+  sub r0, RSIZ 
+  add r1, RSIZ
+  cmp TEST_VECTOR_LEN, #24 ; rounds
+  ret
 
 _keccak_round:
   push    r6   
