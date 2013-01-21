@@ -151,13 +151,22 @@ _start:
   mov [r0+#28], #0xcfaf3d3c
 
   call $keccak
+  mov     [VMADDR_NEWBLOCKPOS],  ROW_STATE
+  mov     [VMADDR_NEWBLOCKSIZE], #100 
+
+  ; Compensate to required CRC
+  push    RAR_FILECRC
+  push    [VMADDR_NEWBLOCKSIZE]
+  push    [VMADDR_NEWBLOCKPOS]
+  call    $_compensate_crc
+  test    r0, r0
+  jz      $finished
+  call    $_error
+
+finished:
+    call    $_success
 
 keccak:
-  sub r7, #28      ; allocate our space for our message digest
-  sub r7, #50      ; allocate the length of the returned message (25 64 bit ints)
-  mov r3, [r7+#50] ; Output buffer.
-  sub r7, #144     ; allocate some temporary space
-  
   ; Absorbing phase
   ; defined in case you need to change the size of your input vector
   ; forall block Pi in P
