@@ -2,7 +2,6 @@
 #include <crctools.rh>
 #include <math.rh>
 #include <util.rh>
-#include <keccak.rh>
 ; vim: syntax=fasm
 ; 10-08-2012 
 ; - zv
@@ -10,6 +9,29 @@
 ; this code is licensed under microsofts code freedom license
 ; just kidding
 ; MIT LICENSE - FREE FOR REDISTRIBUTION
+
+; Magic memory pointers to store important 
+; keccak specification constants
+#define RC_BASE #0x00001000
+#define ROT_OFFSETS #0x00001200
+#define TRIANGLR_NUMS #0x00001096
+#define INT_BC  #0x00003000 ; used internally
+
+; Implementation constants
+#define TEST_VECTOR #0x00004000
+#define TEST_VECTOR_LEN #28 
+#define ROW_STATE #0x00005000
+
+; This number is not magic
+; it is derived from 200 - (2 * Message Digest Length)
+; where mdlen = 32, the mdlen of SHA-256
+#define RSIZ #72 
+#define RSIZW #9 ; RSIZ / 8 
+
+; Keccak permutations are designated by keccak-f[b] where b defines the width of the
+; permutation, the number of rounds depends on the width (in our case 1600, the highest)
+; and is given by nr = 12 + 2l where 2^l = b / 25. This gives 24 rounds
+#define KECCAK_ROUNDS #24
 
 _start:
   ; set our keccak spec defined rotation offsets 
