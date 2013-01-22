@@ -176,16 +176,23 @@ keccak:
   mov r1, TEST_VECTOR_LEN
   mov r3, ROW_STATE
   mov r4, TEST_VECTOR
+  call $keccak_round
+  ret
 
 keccak_round: 
-  push    r6   
-  mov     r6, r7
   mov r2, #0
   call $xor_slice
-  ja $keccak_round 
-  mov     [VMADDR_NEWBLOCKPOS],  [ROW_STATE]   ; Pointer
-  mov     [VMADDR_NEWBLOCKSIZE], TEST_VECTOR_LEN  ; Size
-  call    $_success
+  call $_keccak_round 
+
+  ; you can rewrite this logic if you'd like to test
+  ; messages with a size greater than that of a single
+  ; 5x5 (25 byte) slice
+  ;sub r1, RSIZ 
+  ;add r1, RSIZ
+  ;cmp TEST_VECTOR_LEN, r0; rounds
+  ;ja $keccak_round 
+  ret
+  
 
 xor_slice:
   ; xor twice because weve only got 32 bits of precision here
