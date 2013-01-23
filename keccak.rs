@@ -253,20 +253,19 @@ parity:
   ; loop
   cmp r0, #5
   add r0, #1
-  jnz $parity 
+  jbe $parity 
   ret
 
 
 theta_assignment:
+  push r6
+  mov  r6, r7
+  sub  r7, #24
   push [r1+#4]
   push #5
   call $_mod
+  mov r2, r0 ; mov the result out of mod
 
-                         ; use the bitwise rotation to get through!
-  push r6                ; save stack pointer
-  mov r6, r7             ; create a new frame
-  sub r7, #16            ; allocate 2 64 bit integros
-  mov r2, r0
   push [r1+#8]
   push [r1+#4]
   push #1                ; push our arguments to our clever rotate function
@@ -274,6 +273,10 @@ theta_assignment:
 
   xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
   mov r0, #0           ; r0 is now j of the inner loop
+  call $inner_theta_loop
+  mov     r7, r6                      ; clear frame
+  pop     r6
+  ret
 
 inner_theta_loop:
    add r0, r1
@@ -282,18 +285,23 @@ inner_theta_loop:
    pop r0
    cmp r0, #24
    mov r0, [r0+#5]
-   ja $inner_theta_loop
+   call $inner_theta_loop
    ret 
  
 ; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
 rho_pi:
+  push r6     ; save frame pointer
+  mov r6, r7  ; create new frame
+  sub  r7, #24; allocation some variable space
+
   mov r1, #0 
   mov r5, ROW_STATE
   mov r4, [r5+#8] ; 2nd item (dbl word precision)
 inner_pi:
   mov r0, INT_BC
   mov [r0], #0x00000000
-  ; iterate over the triangular numbers 0..24 
+  ; iterate over the triangular numbers 0..24 by the 
+  ; specification defined rotational constants 
   mov r0, TRIANGLR_NUMS 
   mov r2, [r0+r1] 
   mov r0, INT_BC 
@@ -305,20 +313,21 @@ inner_pi:
   mov r0, ROT_OFFSETS
   mov r3, [r0+r1]
   push r3
+  push r0
   call $rotate
-  pop r1 ; r1 now contains low value 
-  pop r3 ; r3 now contains high value
   mov [r5+r2], r3 
   add r2, #4
-  mov [r5+r2], r1
+  mov [r5+r2], r0 
+  pop r0
   mov r0, INT_BC
   mov r4, [r0] 
   mov [r4+#4], [r0+#4]
 
-
   add r1, #1
   cmp r1, #24 
-  ja $inner_pi 
+  jb $inner_pi 
+  mov     r7, r6 
+  pop     r6 
   ret
  
 ; a[i][j][k] ⊕ = ¬a[i][j+1][k] & a[i][j+2][k].
@@ -350,12 +359,17 @@ bitwise_combine_along_rows:
 
 ;  a[0,0] = a[0,0] xor RC
 iota:
+  push r6     ; save frame pointer
+  mov r6, r7  ; create new frame
+  sub r7, #8 
   pop r0 ; contains a pointer to the first value of our state
   pop r1 ; containts our round
   mov r2, #4 
   mul r2, r1
   xor [r0], r2
   xor [r0+#4], [r2+#4] ; unlimited references, wuw. 
+  mov r6, r7
+  pop r6
   ret
 
      
@@ -364,6 +378,8 @@ iota:
 ; adapted from similar HACKMEM algorithm!
 ; ( mad respect from the youth of today! )
 rotate:
+  push r6     ; save frame pointer
+  mov r6, r7  ; create new frame
   pop r0 ; r0 contains the count
   pop r1 ; r1 contains the low value
   pop r2 ; r2 contains the high value
@@ -389,6 +405,7 @@ inf32:
   shr r1, r5
   or r2, r1
   mov r1, r4 
-  push r1
-  push r2
+  mov r0, r2 ; our return value, the beginning of the 64 bit int 
+  mov     r7, r6                      ; clear frame
+  pop     r6 
   ret
