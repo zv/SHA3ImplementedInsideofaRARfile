@@ -200,11 +200,8 @@ xor_slice:
   xor [r3+r2], [r4+r2] 
   xor [r3+r2+#4], [r4+r2+#4] 
   cmp r2, RSIZW
-  ja $xor_slice
-  call $_keccak_round 
-  sub r0, RSIZ 
-  add r1, RSIZ
-  cmp TEST_VECTOR_LEN, #24 ; rounds
+  add r2, #1
+  jbe $xor_slice
   ret
 
 _keccak_round:
