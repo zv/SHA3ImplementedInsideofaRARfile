@@ -205,17 +205,9 @@ xor_slice:
   ret
 
 _keccak_round:
-  push    r6   
-  mov     r6, r7
-  call $theta
-  push    r6   
-  mov     r6, r7
+;  call $theta
   call $rho_pi
-  push    r6   
-  mov     r6, r7
   call $chi
-  push    r6   
-  mov     r6, r7
   call $iota
   ret
 
