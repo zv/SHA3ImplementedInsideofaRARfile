@@ -212,11 +212,12 @@ _keccak_round:
   ret
 
 theta:
-  call $parity
   ; C[x] = ROW_STATE[x,0] ⊕ OW_STATE[x,1] ⊕ ROW_STATE[x,2] ⊕ ROW_STATE[x,3] ⊕ ROW_STATE[x,4], ∀ x in 0...4
+  call $parity
   ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
+  ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],   ∀ (x, y) in (0...4, 0...4)
+  mov r4, #0 ; i
   call $theta_assignment
-  ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],                ∀ (x, y) in (0...4, 0...4)
   ret
 
 ; heres a haiku that describes this function 
@@ -230,6 +231,7 @@ parity:
   add r1, ROW_STATE 
   mov r2, r0
   add r2, INT_BC
+
   mov [r2+r0], [r1]      
   xor [r2+r0], [r1+#8]  
   xor [r2+r0], [r1+#16]
