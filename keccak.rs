@@ -250,38 +250,53 @@ parity:
   jbe $parity 
   ret
 
-
 theta_assignment:
   push r6
-  mov  r6, r7
-  sub  r7, #24
-  push [r1+#4]
+  mov r6, r7
+  sub r7, #24
+  mov r1, ROW_STATE
+  mov r2, INT_BC
+  mov r5, #0 ; j
+  ; here we produce 
+  ; D[x] = C[x - 1] ⊕ ROT(C[x + 1], 1),  ∀ x in 0...4
+  push [r1+#4] 
   push #5
   call $_mod
-  mov r2, r0 ; mov the result out of mod
-
-  push [r1+#8]
-  push [r1+#4]
-  push #1                ; push our arguments to our clever rotate function
-  call $rotate
-
-  xor r2, r0             ; r2 now contains an exclusive or of the mod and the rotation
-  mov r0, #0           ; r0 is now j of the inner loop
+  mov r3, r0 ; store our first INT_BC index in r3
+  push [r1+#1] 
+  push #5
+  call $_mod ; r0 now contains C[x + 1]
+  push [r0+#4]
+  push [r0]
+  push #1
+  xor r0, r3
+  ; r0 is now D[x]
   call $inner_theta_loop
-  mov     r7, r6                      ; clear frame
+  add r1, #1
+  cmp r1, #4 
+  jb $theta_assignment
+  mov     r7, r6  ; clear frame
   pop     r6
   ret
 
 inner_theta_loop:
-   add r0, r1
-   add r6, #84
-   xor [r6+r0], r2
-   pop r0
-   cmp r0, #24
-   mov r0, [r0+#5]
-   call $inner_theta_loop
-   ret 
- 
+  ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],   ∀ (x, y)
+  push r6
+  mov r6, r7
+  mov r2, r4 ; INT_BC is no longer needed
+  add r2, r5 ; i + j or x + y in keccak spec nomenclature
+  mov r2, [r1+r2]
+  xor [r2], [r0] 
+  xor [r2+#4], [r0+#4] ; the final value to write back into the ROW_STATE 
+  mov [r1], [r2]
+  mov [r1+4], [r2]
+  add r5, #1
+  cmp r5, #4
+  jbe $inner_theta_loop
+  mov r7, r6
+  pop r6
+  ret
+
 ; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
 rho_pi:
   push r6     ; save frame pointer
