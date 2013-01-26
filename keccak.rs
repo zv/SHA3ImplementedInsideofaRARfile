@@ -297,22 +297,32 @@ inner_theta_loop:
 rho_pi:
   push r6     ; save frame pointer
   mov r6, r7  ; create new frame
-  sub  r7, #24; allocation some variable space
+  sub  r7, #4; allocation some variable space
 
   mov r1, #0 
   mov r5, ROW_STATE
   mov r4, [r5+#8] ; 2nd item (dbl word precision)
+  call $inner_pi
+  mov     r7, r6 
+  pop     r6 
+  ret
+
 inner_pi:
+  push r6     ; save frame pointer
+  mov r6, r7  ; create new frame
+  sub  r7, #32; allocation some variable space
+
   mov r0, INT_BC
   mov [r0], #0x00000000
   ; iterate over the triangular numbers 0..24 by the 
   ; specification defined rotational constants 
-  mov r0, TRIANGLR_NUMS 
+  mov r0, TRIANGLR_NUMS ; address of beginning of our list of triangular numbers
   mov r2, [r0+r1] 
   mov r0, INT_BC 
   mov [r0+#4], [r5+r2]  
   mov r4, [r5+r2]
   
+  ; now begin to rotate our row state
   push #0x00000000
   push r4
   mov r0, ROT_OFFSETS
@@ -327,10 +337,9 @@ inner_pi:
   mov r0, INT_BC
   mov r4, [r0] 
   mov [r4+#4], [r0+#4]
-
   add r1, #1
   cmp r1, #24 
-  jb $inner_pi 
+  jz inner_pi
   mov     r7, r6 
   pop     r6 
   ret
