@@ -335,7 +335,7 @@ inner_pi:
   mov [r4+#4], [r0+#4]
   add r1, #1
   cmp r1, #24 
-  jz inner_pi
+  jz $inner_pi
   mov     r7, r6 
   pop     r6 
   ret
