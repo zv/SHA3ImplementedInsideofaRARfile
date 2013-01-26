@@ -205,7 +205,7 @@ xor_slice:
   ret
 
 _keccak_round:
-;  call $theta
+  call $theta
   call $rho_pi
   call $chi
   call $iota
@@ -245,15 +245,15 @@ parity:
   xor [r2+r0+#4], [r1+#28]  
   
   ; loop
-  cmp r0, #5
   add r0, #1
-  jbe $parity 
+  cmp r0, #4
+  ja $parity 
   ret
 
 theta_assignment:
   push r6
   mov r6, r7
-  sub r7, #24
+  sub r7, #80
   mov r1, ROW_STATE
   mov r2, INT_BC
   mov r5, #0 ; j
@@ -274,15 +274,13 @@ theta_assignment:
   call $inner_theta_loop
   add r1, #1
   cmp r1, #4 
-  jb $theta_assignment
+  ja $theta_assignment
   mov     r7, r6  ; clear frame
   pop     r6
   ret
 
 inner_theta_loop:
   ; ROW_STATE[x,y] = ROW_STATE[x,y] ⊕ D[x],   ∀ (x, y)
-  push r6
-  mov r6, r7
   mov r2, r4 ; INT_BC is no longer needed
   add r2, r5 ; i + j or x + y in keccak spec nomenclature
   mov r2, [r1+r2]
@@ -293,8 +291,6 @@ inner_theta_loop:
   add r5, #1
   cmp r5, #4
   jbe $inner_theta_loop
-  mov r7, r6
-  pop r6
   ret
 
 ; INT_BC[y; 2x + 3y] = ROT(ROW_STATE[x; y]; r[x; y]), 8(x; y) in (0 : : : 4; 0 : : : 4)
