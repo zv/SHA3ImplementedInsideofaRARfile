@@ -141,14 +141,10 @@ _start:
 
   ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
   mov r0, TEST_VECTOR
-  mov [r0+#0], #0xa8d71b07
-  mov [r0+#4], #0xf4af26a4
-  mov [r0+#8], #0xff21027f
-  mov [r0+#12], #0x62ff6026
-  mov [r0+#16], #0x7ff955c9
-  mov [r0+#20], #0x63f042c4
-  mov [r0+#24], #0x6da52ee3
-  mov [r0+#28], #0xcfaf3d3c
+  mov [r0+#0], #0x2e773062
+  mov [r0+#4], #0x312e7a31
+  mov [r0+#8], #0x26343839
+  mov [r0+#12], #0x4e30573b
 
   call $keccak
   mov     [VMADDR_NEWBLOCKPOS],  ROW_STATE
