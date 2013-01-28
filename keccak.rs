@@ -147,7 +147,7 @@ _start:
   mov [r0+#12], #0x4e30573b
 
   call $keccak
-  mov     [VMADDR_NEWBLOCKPOS],  ROW_STATE
+  mov     [VMADDR_NEWBLOCKPOS], #0x00004000 
   mov     [VMADDR_NEWBLOCKSIZE], #100 
 
   ; Compensate to required CRC
