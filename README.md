@@ -44,6 +44,15 @@ So where do we go from here? How about.... Keccak inside the RARVM?
 
 
 # RAR VM?
+Believe it or not, RAR files can contain bytecode for a simple x86-like virtual machine called the RarVM. 
+This is designed to provide filters (preprocessors) to perform some reversible transformation on input data 
+to increase redundancy, and thus improve compression.
+
+For example, one filter (likely inspired by LZX, an earlier scheme with a similar feature) is called "Intel E8 preprocessing",
+which is designed to increase redundancy in x86 code.
+
+WinRAR includes around a dozen standard filters that improve compression of several common inputs, but surprisingly also allows new filters to be defined at runtime by archives!
+
 (A related blog post is available here http://blog.cmpxchg8b.com/2012/09/fun-with-constrained-programming.html)
 
 Architecture
