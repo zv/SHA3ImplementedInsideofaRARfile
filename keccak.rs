@@ -170,7 +170,7 @@ keccak:
   ;   S = Keccak-f[r+c](S)
   mov r0, RSIZ
   mov r1, TEST_VECTOR_LEN
-  mov r3, ROW_STATE
+  mov r3, INT_BC 
   mov r4, TEST_VECTOR
   call $keccak_round
   ret
@@ -183,10 +183,10 @@ keccak_round:
   ; you can rewrite this logic if you'd like to test
   ; messages with a size greater than that of a single
   ; 5x5 (25 byte) slice
-  ;sub r1, RSIZ 
-  ;add r1, RSIZ
-  ;cmp TEST_VECTOR_LEN, r0; rounds
-  ;ja $keccak_round 
+  sub r1, RSIZ 
+  add r1, RSIZ
+  cmp TEST_VECTOR_LEN, r0; rounds
+  jnz $keccak_round 
   ret
   
 
@@ -296,7 +296,7 @@ rho_pi:
   sub  r7, #4; allocation some variable space
 
   mov r1, #0 
-  mov r5, ROW_STATE
+  mov r5, INT_BC 
   mov r4, [r5+#8] ; 2nd item (dbl word precision)
   call $inner_pi
   mov     r7, r6 
