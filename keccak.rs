@@ -167,6 +167,44 @@ _start:
 finished:
     call    $_success
 
+
+; this function does bitwise rotation on a 64 bit value 
+; with 32 bits of precision
+; adapted from similar HACKMEM algorithm!
+; ( mad respect from the youth of today! )
+rotate:
+  push r6     ; save frame pointer
+  mov r6, r7  ; create new frame
+  pop r0 ; r0 contains the count
+  pop r1 ; r1 contains the low value
+  pop r2 ; r2 contains the high value
+  and r0, #0x3F
+  cmp r0, #0x1F
+  jbe $inf32
+  ; swap our values 
+  mov r3, r1 
+  mov r1, r2 
+  mov r2, r3 
+  and  r0, #0x1F
+inf32:
+  ; hakmem magic ahead
+  mov r5, #32
+  sub r5, r0
+  mov r4, r2
+  shr r4, r5
+  mov r4, r4
+  mov r4, r1
+  shl r4, r0
+  or r4, r4
+  shl r2, r0
+  shr r1, r5
+  or r2, r1
+  mov r1, r4 
+  mov r0, r2 ; our return value, the beginning of the 64 bit int 
+  mov     r7, r6                      ; clear frame
+  pop     r6 
+  ret
+
 keccak:
   ; Absorbing phase
   ; defined in case you need to change the size of your input vector
@@ -388,39 +426,4 @@ iota:
   ret
 
      
-; this function does bitwise rotation on a 64 bit value 
-; with 32 bits of precision
-; adapted from similar HACKMEM algorithm!
-; ( mad respect from the youth of today! )
-rotate:
-  push r6     ; save frame pointer
-  mov r6, r7  ; create new frame
-  pop r0 ; r0 contains the count
-  pop r1 ; r1 contains the low value
-  pop r2 ; r2 contains the high value
-  and r0, #0x3F
-  cmp r0, #0x1F
-  jbe $inf32
-  ; swap our values 
-  mov r3, r1 
-  mov r1, r2 
-  mov r2, r3 
-  and  r0, #0x1F
-inf32:
-  ; hakmem magic ahead
-  mov r5, #32
-  sub r5, r0
-  mov r4, r2
-  shr r4, r5
-  mov r4, r4
-  mov r4, r1
-  shl r4, r0
-  or r4, r4
-  shl r2, r0
-  shr r1, r5
-  or r2, r1
-  mov r1, r4 
-  mov r0, r2 ; our return value, the beginning of the 64 bit int 
-  mov     r7, r6                      ; clear frame
-  pop     r6 
-  ret
+
