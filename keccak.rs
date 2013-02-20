@@ -17,9 +17,9 @@
 
 ; Magic memory pointers to store important 
 ; keccak specification constants
-#define RC_BASE #0x00001000
-#define ROT_OFFSETS #0x00001200
-#define TRIANGLR_NUMS #0x00001096
+#define RC_BASE #0x00004096
+#define ROT_OFFSETS #0x00002800
+#define TRIANGLR_NUMS #0x00002048
 #define INT_BC  #0x00003000 ; used internally
 
 ; Implementation constants
@@ -268,8 +268,7 @@ parity:
   ; xor the lower 32 bits
   mov r1, r0 
   add r1, ROW_STATE 
-  mov r2, r0
-  add r2, INT_BC
+  mov r2, INT_BC 
 
   mov [r2+r0], [r1]      
   xor [r2+r0], [r1+#8]  
@@ -358,6 +357,7 @@ inner_pi:
   mov r0, TRIANGLR_NUMS ; address of beginning of our list of triangular numbers
   mov r2, [r0+r1] 
   mov r0, INT_BC 
+  mov [r0], [r5]  
   mov [r0+#4], [r5+r2]  
   mov r4, [r5+r2]
   
