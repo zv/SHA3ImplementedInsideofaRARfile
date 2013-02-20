@@ -5,10 +5,15 @@
 ; vim: syntax=fasm
 ; 10-08-2012 
 ; - zv
+
 ; this is a pure RAR file virtual machine implementation of the new SHA-3 standard keccak
-; this code is licensed under microsofts code freedom license
-; just kidding
-; MIT LICENSE - FREE FOR REDISTRIBUTION
+
+; shoutz to spengler for being the one to discover the sublime beauty of the RARVM portable assembly kit.  
+
+; thanks to gwern for his patches to quickcheck, whom without, this project would have still been entirely possible but a lot more time consuming.
+
+; this software is licensed under the Microsoft Public License (just kidding, you can rip any of these kodes)
+
 
 ; Magic memory pointers to store important 
 ; keccak specification constants
@@ -34,7 +39,7 @@
 #define KECCAK_ROUNDS #24
 
 _start:
-  ; set our keccak spec defined rotation offsets 
+  ; set our Keccak spec defined rotation offsets 
   mov r0, ROT_OFFSETS
   mov [r0+#4], #1
   mov [r0+#8], #3
