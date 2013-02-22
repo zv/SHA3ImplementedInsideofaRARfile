@@ -17,15 +17,15 @@
 
 ; Magic memory pointers to store important 
 ; keccak specification constants
-#define RC_BASE #0x00004096
-#define ROT_OFFSETS #0x00002800
-#define TRIANGLR_NUMS #0x00002048
-#define INT_BC  #0x00003000 ; used internally
+#define RC_BASE         #0x00004096
+#define ROT_OFFSETS     #0x00002800
+#define TRIANGLR_NUMS   #0x00002048
+#define INT_BC          #0x00003000 ; used internally
 
 ; Implementation constants
-#define TEST_VECTOR #0x00004000
-#define TEST_VECTOR_LEN #28 
-#define ROW_STATE #0x00005000
+#define TEST_VECTOR     #0x00004000
+#define TEST_VECTOR_LEN #28
+#define ROW_STATE       #0x00005000
 
 ; This number is not magic
 ; it is derived from 200 - (2 * Message Digest Length)
