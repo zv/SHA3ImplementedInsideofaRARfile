@@ -8,4 +8,5 @@ commands 1
     p/x Flags
     x/x Op1
     x/x Op2
+    x/x Op3
 end
