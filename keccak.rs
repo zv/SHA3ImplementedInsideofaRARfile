@@ -229,7 +229,8 @@ keccak_round:
   sub r1, RSIZ 
   add r1, RSIZ
   cmp TEST_VECTOR_LEN, r0; rounds
-  jnz $keccak_round 
+  push r0
+  jmp $keccak_round 
   ret
   
 
