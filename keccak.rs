@@ -146,13 +146,14 @@ _start:
 
   ; our test vector for 24 round Keccak-256 "b0w.1z.1984&N0W"
   mov r0, TEST_VECTOR
-  mov [r0+#0], #0x2e773062
-  mov [r0+#4], #0x312e7a31
-  mov [r0+#8], #0x26343839
-  mov [r0+#12], #0x4e30573b
+  mov [r0+#4], #0x2e773062
+  mov [r0+#8], #0x312e7a31
+  mov [r0+#12], #0x26343839
+  mov [r0+#16], #0x3b57304e
+
 
   call $keccak
-  mov     [VMADDR_NEWBLOCKPOS], INT_BC 
+  mov     [VMADDR_NEWBLOCKPOS], TEST_VECTOR 
   mov     [VMADDR_NEWBLOCKSIZE], #100 
 
   ; Compensate to required CRC
