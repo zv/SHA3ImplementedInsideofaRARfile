@@ -3,19 +3,13 @@
 #include <math.rh>
 #include <util.rh>
 ; vim: syntax=fasm
-; 10-08-2012 
+; 10-08-2012
 ; - zv
-
 ; this is a pure RAR file virtual machine implementation of the new SHA-3 standard keccak
-
-; shoutz to spengler for being the one to discover the sublime beauty of the RARVM portable assembly kit.  
-
-; thanks to gwern for his patches to quickcheck, whom without, this project would have still been entirely possible but a lot more time consuming.
 
 ; this software is licensed under the Microsoft Public License (just kidding, you can rip any of these kodes)
 
-
-; Magic memory pointers to store important 
+; Magic memory pointers to store important
 ; keccak specification constants
 #define RC_BASE         #0x00004096
 #define ROT_OFFSETS     #0x00002800
